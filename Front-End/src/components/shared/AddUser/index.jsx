@@ -1,89 +1,88 @@
-import React, { useState } from 'react';
-import { Grid, makeStyles } from '@material-ui/core';
-import { DARK_BLUE_COLOR, USER_TYPES } from 'constants/index';
-import TextField from 'components/shared/Fields/TextField';
-import PasswordField from 'components/shared/Fields/PasswordFields';
-import Select from 'components/shared/Fields/Select';
-import Button from 'components/shared/Button/Button';
-import SubTitle from 'components/shared/SubTitle';
+import React, { useState } from "react";
+import { Grid, makeStyles } from "@material-ui/core";
+import { DARK_BLUE_COLOR, USER_TYPES } from "constants/index";
+import TextField from "components/shared/Fields/TextField";
+import PasswordField from "components/shared/Fields/PasswordFields";
+import Select from "components/shared/Fields/Select";
+import Button from "components/shared/Button/Button";
+import SubTitle from "components/shared/SubTitle";
 
 const useStyles = makeStyles(() => ({
   containerRoot: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
     width: 352,
-    margin: '0 auto'
+    margin: "0 auto",
   },
   container: {
-    alignItems: 'end'
+    alignItems: "end",
   },
   checkAccountText: {
     fontSize: 14,
     color: DARK_BLUE_COLOR,
     marginRight: 16,
-    display: 'flex',
-    alignItems: 'center'
+    display: "flex",
+    alignItems: "center",
   },
   topPartRoot: {
     minHeight: 40,
-    display: 'flex',
-    justifyContent: 'flex-end',
+    display: "flex",
+    justifyContent: "flex-end",
     padding: 20,
-    width: '95%'
+    width: "95%",
   },
   link: {
-    textDecoration: 'none'
+    textDecoration: "none",
   },
   formContent: {
     flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
     width: 352,
-    margin: '0 auto'
+    margin: "0 auto",
   },
   forgotPassword: {
-    display: 'flex',
-    justifyContent: 'flex-end'
+    display: "flex",
+    justifyContent: "flex-end",
   },
   forgotPasswordLink: {
     color: `${DARK_BLUE_COLOR}80`,
-    fontSize: 14
+    fontSize: 14,
   },
   field: {
-    marginTop: 20
+    marginTop: 20,
   },
   submit: {
-    marginTop: 32
+    marginTop: 32,
   },
   hiddenTextField: {
-    display: 'none'
+    display: "none",
   },
   center: {
-    textAlign: 'center',
-    width: '100%'
+    textAlign: "center",
+    width: "100%",
   },
-  addUser: {}
+  addUser: {},
 }));
 
 const AddUser = (addUserHandler = () => {}) => {
   const classes = useStyles();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    firstName: '',
-    lastName: '',
-    userType: ''
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    userType: "",
   });
 
   const { email, password, firstName, lastName, userType } = formData;
 
-  const inputChangeHandler = e => {
-    e.persist();
-    setFormData(prev => ({ ...prev, [e.target.id]: e.target.value }));
+  const inputChangeHandler = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
   const userHandler = () => {
@@ -153,7 +152,9 @@ const AddUser = (addUserHandler = () => {}) => {
           placeholder="User Type"
           options={USER_TYPES}
           formControlClassName={classes.field}
-          onChange={e => setFormData(prev => ({ ...prev, userType: e.target.value }))}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, userType: e.target.value }))
+          }
           name="userType"
           applyEmptyOption
           emptyOptionTitle="Select User Type"

@@ -2,6 +2,8 @@ import { SIGN_IN_ROUTE, SIGN_UP_ROUTE, WORKSPACES_ROUTE } from "constants";
 import Login from "Pages/Auth/Signin";
 import Signup from "Pages/Auth/Signup";
 import WorkSpaces from "Pages/WorkSpaces";
+import CreateEditWorkSpace from "Pages/WorkSpaces/CreateEditWorkSpace";
+import ViewWorkSpaces from "Pages/WorkSpaces/ViewWorkSpaces";
 import React from "react";
 import { useRoutes } from "react-router-dom";
 
@@ -12,6 +14,18 @@ const Routes = () => {
     {
       path: WORKSPACES_ROUTE,
       element: <WorkSpaces />,
+    },
+    {
+      path: "/workspace/create",
+      element: <CreateEditWorkSpace />,
+    },
+    {
+      path: "/workspaces/:id",
+      element: <ViewWorkSpaces />,
+    },
+    {
+      path: "/workspace/edit/:id",
+      element: <CreateEditWorkSpace />,
     },
   ]);
 

@@ -6,12 +6,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Typography } from "@material-ui/core";
 import PasswordField from "components/shared/Fields/PasswordFields";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { addUserData } from "redux/slices/user";
 import {
   DARK_BLUE_COLOR,
   LIGHT_BLUE_COLOR,
   WHITE_COLOR,
   FETCH_LOADING_TEXT,
   SNACKBAR_TYPE,
+  WORKSPACES_ROUTE,
 } from "constants/index";
 import {
   EMAIL_CONFIRMATION,
@@ -25,6 +27,7 @@ import {
   removeLoadingData,
 } from "redux/slices/shared";
 import { useFetchMutation } from "hooks/useFetch";
+import AddUser from "components/shared/AddUser";
 
 const useStyles = makeStyles(() => ({
   confirmationContainer: {
@@ -90,7 +93,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const SignIn = () => {
-  const history = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { search } = useLocation();
   const [confirmCode, setConfirmCode] = useState("");
@@ -120,34 +123,30 @@ const SignIn = () => {
   //   }
   // }, [search, confirmEmail]);
 
-  // useEffect(() => {
-  //   if (signInIsLoading) {
-  //     dispatch(
-  //       addLoadingData({
-  //         key: "signInIsLoading",
-  //         text: FETCH_LOADING_TEXT,
-  //         open: true,
-  //       })
-  //     );
-  //   } else {
-  //     dispatch(removeLoadingData("signInIsLoading"));
-  //   }
-  // }, [signInIsLoading, confirmEmailIsLoading, twoFactorIsLoading, dispatch]);
+  useEffect(() => {
+    if (signInIsLoading) {
+      dispatch(
+        addLoadingData({
+          key: "signInIsLoading",
+          text: FETCH_LOADING_TEXT,
+          open: true,
+        })
+      );
+    } else {
+      dispatch(removeLoadingData("signInIsLoading"));
+    }
+  }, [signInIsLoading, dispatch]);
 
   const inputChangeHandler = (e) => {
-    e.persist();
     setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
   useEffect(() => {
-    if (signInQueryData) {
-      if (!signInQueryData.confirmed) {
-        setOpenConfirmationMessage(true);
-        return;
-      }
-      setOpenConfirmationMessage(true);
+    if (signInQueryData?.signin) {
+      dispatch(addUserData(signInQueryData.signin));
+      navigate(WORKSPACES_ROUTE);
     }
-  }, [signInQueryData, history, dispatch]);
+  }, [signInQueryData, navigate, dispatch]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
