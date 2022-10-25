@@ -1,6 +1,12 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+export const getMe = async (_parent, _args, context) => {
+  const { user } = context;
+  if (!user) return null;
+  return user;
+};
+
 export const signup = async (
   _parent,
   { data: { email, password, firstName, lastName } },

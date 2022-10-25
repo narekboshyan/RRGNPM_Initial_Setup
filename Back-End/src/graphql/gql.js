@@ -16,11 +16,23 @@ input SignupData{
   firstName: String!
   lastName: String!
 }
+
+input WorkspaceData{
+  name:   String!
+  slag:   String!
+}
 `;
 export const types = `
   type User{
     id: Int!
     ${userTypes}
     token : String!
+  }
+
+  type WorkSpace{
+    name: String!
+    userId: Int!
+    subDomain:  String!
+    id: Int!
   }
 `;
