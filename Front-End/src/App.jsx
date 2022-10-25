@@ -4,13 +4,16 @@ import { GET_ME } from "graphql/queries/auth";
 import { useLazyQueryWithOnError } from "hooks/apollo";
 import React, { useEffect, useMemo } from "react";
 import { Suspense } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addUserData } from "redux/slices/user";
 import Routes from "Routes";
 import { deleteItemFromLocalStorage, getItemFromLocalStorage } from "utils";
 
 function App() {
   const dispatch = useDispatch();
+  const { loading } = useSelector(({ shared }) => shared);
+
+  console.log(loading);
 
   const [getMe, { data }] = useLazyQueryWithOnError(GET_ME, {
     onError() {
@@ -18,6 +21,16 @@ function App() {
     },
     fetchPolicy: "network-only",
   });
+
+  const loadingText = useMemo(
+    () => Object.values(loading).find((val) => val?.open)?.text,
+    [loading]
+  );
+
+  const loadingOpen = useMemo(
+    () => Object.values(loading).some((val) => val?.open),
+    [loading]
+  );
 
   const getMeData = useMemo(() => data?.getMe || {}, [data]);
 
@@ -35,10 +48,9 @@ function App() {
 
   return (
     <>
-      <Suspense fallback={<CircularLoading />}>
-        <SharedSnackbar />
-        <Routes />
-      </Suspense>
+      <CircularLoading text={loadingText} open={loadingOpen} />
+      <Routes />
+      <SharedSnackbar />
     </>
   );
 }

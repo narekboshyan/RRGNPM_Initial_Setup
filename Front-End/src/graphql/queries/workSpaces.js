@@ -6,6 +6,10 @@ export const GET_WORKSPACES = gql`
       name
       subDomain
       id
+      channels {
+        id
+        name
+      }
     }
   }
 `;

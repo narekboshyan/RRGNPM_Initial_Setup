@@ -1,24 +1,23 @@
-import React, { useState } from 'react';
-import { v4 } from 'uuid';
-import { makeStyles } from '@material-ui/core/styles';
-import { Typography } from '@material-ui/core';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import { FETCH_LOADING_TEXT } from 'constants/index';
-import CircularLoading from 'components/shared/Loading';
-import RowTableData from './RowTableData';
+import React, { useState } from "react";
+import { v4 } from "uuid";
+import { makeStyles } from "@material-ui/core/styles";
+import { Typography } from "@material-ui/core";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import { FETCH_LOADING_TEXT } from "constants/index";
+import RowTableData from "./RowTableData";
 
 const useStyles = makeStyles({
   table: {
-    display: 'flex',
-    justifyContent: 'center'
+    display: "flex",
+    justifyContent: "center",
   },
-  tableContainer: {}
+  tableContainer: {},
 });
 
 const DynamicNestedTable = ({
@@ -26,7 +25,7 @@ const DynamicNestedTable = ({
   rowData,
   routeStagesHeadCells,
   selectedPO = () => {},
-  loading
+  loading,
 }) => {
   const classes = useStyles();
   const [current, setCurrent] = useState(null);
@@ -35,8 +34,6 @@ const DynamicNestedTable = ({
     <>
       <div className={classes.table}>
         <TableContainer component={Paper} className={classes.tableContainer}>
-          <CircularLoading text={FETCH_LOADING_TEXT} open={loading} fullScreen={false} />
-
           <Typography
             className="font-size-lg px-3 py-4 font-weight-bold"
             variant="h6"
@@ -47,13 +44,13 @@ const DynamicNestedTable = ({
           <Table aria-label="collapsible table">
             <TableHead>
               <TableRow>
-                {headCells.map(cell => (
+                {headCells.map((cell) => (
                   <TableCell key={cell.id}>{cell.label}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody>
-              {rowData.map(row => (
+              {rowData.map((row) => (
                 <RowTableData
                   key={v4()}
                   row={row}

@@ -3,10 +3,11 @@ import Button from "components/shared/Button/Button";
 import TextField from "components/shared/Fields/TextField";
 import { WORKSPACES_ROUTE } from "constants";
 import { CREATE_WORKSPACES } from "graphql/mutations";
-import { useMutationWithOnError } from "hooks/apollo";
-import React, { useState } from "react";
+import { GET_WORKSPACES } from "graphql/queries/workSpaces";
+import { useMutationWithOnError, useQueryWithOnError } from "hooks/apollo";
+import React, { useMemo, useState } from "react";
 import { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 const useStyles = makeStyles({
   formControl: { width: "40%", margin: "50px auto" },
@@ -22,12 +23,35 @@ const useStyles = makeStyles({
 const CreateEditWorkSpace = () => {
   const [workSpaceData, setWorkSpaceData] = useState({
     name: "",
-    slag: "",
+    subDomain: "",
+    id: null,
   });
   const classes = useStyles();
   const navigate = useNavigate();
 
-  const { name, slag } = workSpaceData;
+  const { name, subDomain } = workSpaceData;
+  const { id } = useParams();
+
+  const { data: workSpaceQueryData, loading: workSpaceIsLoading } =
+    useQueryWithOnError(GET_WORKSPACES, {
+      fetchPolicy: "no-cache",
+      variables: {
+        id: +id,
+      },
+      skip: !id,
+    });
+
+  const workSpaceFetchedData = useMemo(
+    () => workSpaceQueryData?.getWorkSpaces[0] || {},
+    [workSpaceQueryData]
+  );
+
+  useEffect(() => {
+    if (workSpaceQueryData?.getWorkSpaces) {
+      const { name, subDomain, id } = workSpaceFetchedData;
+      setWorkSpaceData({ name, subDomain, id });
+    }
+  }, [workSpaceFetchedData, workSpaceQueryData]);
 
   const [createWorkspace, { data: signInQueryData, loading: signInIsLoading }] =
     useMutationWithOnError(CREATE_WORKSPACES);
@@ -37,8 +61,6 @@ const CreateEditWorkSpace = () => {
       navigate(WORKSPACES_ROUTE);
     }
   }, [signInQueryData, navigate]);
-
-  useEffect(() => {});
 
   const inputChangeHandler = (e) => {
     setWorkSpaceData((prevState) => ({
@@ -77,13 +99,13 @@ const CreateEditWorkSpace = () => {
           <div className={classes.formGroup}>
             <TextField
               required
-              placeholder="Slag"
-              value={slag}
+              placeholder="subDomain"
+              value={subDomain}
               onChange={inputChangeHandler}
               fullWidth
-              label="Slag"
-              id="slag"
-              autoComplete="slag"
+              label="subDomain"
+              id="subDomain"
+              autoComplete="subDomain"
             />
           </div>
           <div className={classes.formButton}>

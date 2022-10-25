@@ -10,11 +10,12 @@ import { List } from "@material-ui/icons";
 import Button from "components/shared/Button/Button";
 import { WORKSPACES_ROUTE } from "constants";
 import { GET_WORKSPACES } from "graphql/queries/workSpaces";
-import { useQueryWithOnError } from "hooks/apollo";
+import { useMutationWithOnError, useQueryWithOnError } from "hooks/apollo";
 import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { DELETE_WORKSPACES } from "graphql/mutations";
 
 const useStyles = makeStyles({
   workSpaceContainer: {
@@ -47,19 +48,32 @@ const useStyles = makeStyles({
 });
 
 const WorkSpaces = () => {
-  const { data: workSpaceQueryData, loading: workSpaceIsLoading } =
-    useQueryWithOnError(GET_WORKSPACES, {
-      fetchPolicy: "no-cache",
-    });
+  const {
+    data: workSpaceQueryData,
+    loading: workSpaceIsLoading,
+    refetch,
+  } = useQueryWithOnError(GET_WORKSPACES, {
+    fetchPolicy: "no-cache",
+  });
 
   const classes = useStyles();
+
+  const [
+    deleteWorkSpace,
+    { data: deleteQueryData, loading: deleteWorkSpaceIsLoading },
+  ] = useMutationWithOnError(DELETE_WORKSPACES);
 
   const workSpaceData = useMemo(
     () => workSpaceQueryData?.getWorkSpaces || [],
     [workSpaceQueryData]
   );
 
-  console.log(workSpaceData, "workSpaceData");
+  const deleteWorkspaceHandler = async (id) => {
+    await deleteWorkSpace({
+      variables: { id },
+    });
+    refetch();
+  };
 
   return (
     <Grid container>
@@ -81,7 +95,10 @@ const WorkSpaces = () => {
                 <Link to={`/workspace/edit/${id}`}>
                   <EditIcon />
                 </Link>
-                <span className={classes.deleteIcon}>
+                <span
+                  className={classes.deleteIcon}
+                  onClick={() => deleteWorkspaceHandler(id)}
+                >
                   <DeleteIcon />
                 </span>
               </div>

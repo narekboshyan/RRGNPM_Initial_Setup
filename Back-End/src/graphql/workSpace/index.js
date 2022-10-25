@@ -1,18 +1,34 @@
-export const createWorkspace = async (
+// Need to work on Permissions
+export const createEditWorkspace = async (
   _parent,
-  { data: { name, slag } },
+  { data: { name, subDomain, id } },
   context
 ) => {
   try {
     const { prisma, user } = context;
 
-    await prisma.workSpace.create({
-      data: {
-        userId: user.id,
-        name,
-        subDomain: slag,
-      },
-    });
+    if (id) {
+      console.log("ID EXISTS");
+      await prisma.workSpace.update({
+        where: {
+          id,
+        },
+        data: {
+          name,
+          subDomain,
+        },
+      });
+    } else {
+      console.log("ID DOES NOT EXISTS");
+
+      await prisma.workSpace.create({
+        data: {
+          userId: user.id,
+          name,
+          subDomain,
+        },
+      });
+    }
 
     return true;
   } catch (error) {
@@ -29,6 +45,9 @@ export const getWorkSpaces = async (_parent, { id }, context) => {
         userId: user.id,
         id,
       },
+      include: {
+        channels: true,
+      },
     });
 
     return workSpaces;
@@ -36,4 +55,17 @@ export const getWorkSpaces = async (_parent, { id }, context) => {
     console.log(error);
     return error;
   }
+};
+
+// Need to work on Permissions
+export const deleteWorkSpace = async (_parent, { id }, context) => {
+  const { prisma, user } = context;
+  console.log(id);
+  await prisma.workSpace.delete({
+    where: {
+      id,
+    },
+  });
+
+  return true;
 };

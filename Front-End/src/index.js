@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import App from "App";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -7,6 +7,9 @@ import { ApolloProvider } from "@apollo/client";
 import { client } from "apollo";
 import { store } from "redux/store";
 import "./index.scss";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import CircularLoading from "components/shared/Loading";
 
 const container = document.getElementById("root");
 const root = createRoot(container);
@@ -15,9 +18,13 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <ApolloProvider client={client}>
-        <Router>
-          <App tab="home" />
-        </Router>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <Suspense fallback={<span>FallBack Text</span>}>
+            <Router>
+              <App />
+            </Router>
+          </Suspense>
+        </MuiPickersUtilsProvider>
       </ApolloProvider>
     </Provider>
   </React.StrictMode>

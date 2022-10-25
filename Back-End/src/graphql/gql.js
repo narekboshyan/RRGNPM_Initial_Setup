@@ -18,8 +18,19 @@ input SignupData{
 }
 
 input WorkspaceData{
+  id:     Int
   name:   String!
-  slag:   String!
+  subDomain:   String!
+}
+
+input ChannelsData{
+  workspaceId: Int!
+  channelsData: [ChannelType]
+}
+
+input ChannelType{
+  name: String!
+  workspaceId: Int!
 }
 `;
 export const types = `
@@ -30,9 +41,16 @@ export const types = `
   }
 
   type WorkSpace{
+    id: Int!
     name: String!
     userId: Int!
     subDomain:  String!
-    id: Int!
+    channels:[TypeChannel]
+  }
+
+  type TypeChannel{
+    id:   Int!
+    name: String!
+    workspaceId: Int!
   }
 `;

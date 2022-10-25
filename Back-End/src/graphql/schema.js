@@ -3,22 +3,28 @@ import { DateTimeResolver } from "graphql-scalars";
 import { gql } from "apollo-server-express";
 import { inputs, types } from "./gql.js";
 import { signin, signup, getMe } from "./auth/index.js";
-import { createWorkspace, getWorkSpaces } from "./workSpace/index.js";
-import { user } from "./users/index.js";
+import {
+  createEditWorkspace,
+  getWorkSpaces,
+  deleteWorkSpace,
+} from "./workSpace/index.js";
+import { createEditChannels, getChannels } from "./channels/index.js";
 
 const typeDefs = gql`
   ${types}
   ${inputs}
   type Query {
     getMe: User!
-    user: Boolean
     getWorkSpaces(id: Int): [WorkSpace!]!
+    getChannels(workspaceId: Int!): [TypeChannel]
   }
 
   type Mutation {
     signin(data: SigninData!): User!
     signup(data: SignupData!): Boolean
-    createWorkspace(data: WorkspaceData!): Boolean
+    createEditWorkspace(data: WorkspaceData!): Boolean
+    deleteWorkSpace(id: Int!): Boolean
+    createEditChannels(data: ChannelsData): Boolean
   }
 
   scalar DateTime
@@ -28,8 +34,14 @@ const typeDefs = gql`
 `;
 
 const resolvers = {
-  Query: { user, getWorkSpaces, getMe },
-  Mutation: { signin, signup, createWorkspace },
+  Query: { getWorkSpaces, getMe, getChannels },
+  Mutation: {
+    signin,
+    signup,
+    createEditWorkspace,
+    deleteWorkSpace,
+    createEditChannels,
+  },
   DateTime: DateTimeResolver,
 };
 

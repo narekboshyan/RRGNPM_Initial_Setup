@@ -1,3 +1,4 @@
+import PrivateRoute from "components/PrivateRoute";
 import { SIGN_IN_ROUTE, SIGN_UP_ROUTE, WORKSPACES_ROUTE } from "constants";
 import Login from "Pages/Auth/Signin";
 import Signup from "Pages/Auth/Signup";

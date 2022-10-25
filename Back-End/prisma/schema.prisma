@@ -31,7 +31,6 @@ model WorkSpace {
 model Channel {
   id          Int       @id @default(autoincrement())
   name        String
-  subDomain   String    @unique
-  workspaces  WorkSpace @relation(fields: [workSpaceId], references: [id])
-  workSpaceId Int
+  workspaces  WorkSpace @relation(fields: [workspaceId], references: [id])
+  workspaceId Int
 }
