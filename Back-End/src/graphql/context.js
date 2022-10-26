@@ -35,10 +35,6 @@ const getUnAuthenticatedContext = async (operationName, userId) => {
 export const context = async ({ req }) => {
   try {
     const { operationName } = req.body;
-    console.log(
-      operationName === "IntrospectionQuery",
-      process.env.NODE_ENV === "development"
-    );
     if (
       operationName === "IntrospectionQuery" &&
       process.env.NODE_ENV === "development"

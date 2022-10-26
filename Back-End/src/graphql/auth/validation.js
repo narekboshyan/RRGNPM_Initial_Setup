@@ -38,7 +38,6 @@ export const validator = (args) => {
 
   const valid = ajv.validate(schema, args);
   if (!valid) {
-    console.log(ajv.errors, "ERROR_FROM_AJV_VALIDATION");
     return false;
   }
   return true;

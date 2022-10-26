@@ -1,21 +1,31 @@
-import { Email } from "../../services/Email.js";
-import multer from "multer";
-
-const upload = multer({
-  dest: "/src/uploads/",
-});
-
-const multiUpload = upload.fields([
-  { name: "avatar", maxCount: 1 },
-  { name: "RESUME", maxCount: 1 },
-]);
+import fs from "fs";
+import path, { resolve } from "path";
 
 export const uploadFiles = async (parent, { files }, context) => {
-  const { user } = context;
-  const uploadedFiles = files.map(({ file }) => file);
-  console.log(uploadedFiles, "uploadedFiles");
-  upload.array(uploadedFiles);
   try {
+    const response = await Promise.all(files.map(({ file }) => file));
+    const allFiles = response.map(({ file }) => file);
+    const __dirname = resolve();
+    const filesData = [];
+
+    for (const { filename, createReadStream } of allFiles) {
+      const pathname = path.join(__dirname, `/src/uploads/${filename}`);
+      const stream = createReadStream();
+      stream.pipe(fs.createWriteStream(pathname));
+      stream.on("end", async () => {
+        filesData.push({
+          filename,
+          content: fs.readFileSync(
+            path.join(__dirname, `/src/uploads/files/${filename}`),
+            {
+              encoding: "base64",
+            }
+          ),
+          type: res[i].mimetype,
+          disposition: "attachment",
+        });
+      });
+    }
   } catch (error) {
     console.log(error);
     return error;

@@ -67,7 +67,6 @@ export const getWorkSpaces = async (_parent, { id }, context) => {
 // Need to work on Permissions
 export const deleteWorkSpace = async (_parent, { id }, context) => {
   const { prisma, user } = context;
-  console.log(id);
   await prisma.workspace.delete({
     where: {
       id,

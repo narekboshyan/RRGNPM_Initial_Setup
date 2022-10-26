@@ -17,10 +17,13 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { DELETE_WORKSPACES, UPLOAD_FILES } from "graphql/mutations";
 import { useDispatch } from "react-redux";
-import { addLoadingData, removeLoadingData } from "redux/slices/shared";
 import {
-  DARK_BLUE_COLOR,
-  DARK_RED_COLOR,
+  addLoadingData,
+  addSnackbar,
+  removeLoadingData,
+} from "redux/slices/shared";
+import {
+  SNACKBAR_TYPE,
   FETCH_LOADING_TEXT,
   GRAY_COLOR,
   LIGHTEN_GRAY_COLOR,
@@ -66,6 +69,11 @@ const useStyles = makeStyles({
   },
   dragDrop: {
     marginTop: 30,
+    flex: 1,
+    width: "100%",
+  },
+  typoGraphy: {
+    textAlign: "center",
   },
 });
 
@@ -86,6 +94,17 @@ const WorkSpaces = () => {
     deleteWorkSpace,
     { data: deleteQueryData, loading: deleteWorkSpaceIsLoading },
   ] = useMutationWithOnError(DELETE_WORKSPACES);
+
+  useEffect(() => {
+    if (deleteQueryData?.deleteWorkSpace) {
+      dispatch(
+        addSnackbar({
+          type: SNACKBAR_TYPE.success,
+          message: "Workspace is successfully deleted",
+        })
+      );
+    }
+  }, [deleteQueryData]);
 
   const workSpaceData = useMemo(
     () => workSpaceQueryData?.getWorkSpaces || [],
@@ -126,22 +145,27 @@ const WorkSpaces = () => {
 
   return (
     <>
-      <Typography variant="h2">WorkSpaces</Typography>
+      <Typography variant="h3" className={classes.typoGraphy}>
+        WorkSpace Page
+      </Typography>
       <Grid container>
-        <Grid md={8} className={classes.workSpaceContainer}>
+        <Grid md={7} className={classes.workSpaceContainer}>
+          <Typography variant="h5" className={classes.typoGraphy}>
+            WorkSpace list
+          </Typography>
           {workSpaceData.map(({ name, subDomain, id }) => (
-            <div className={classes.workSpaceRow}>
+            <div className={classes.workSpaceRow} key={id}>
+              {console.log(WORKSPACES_ROUTE, id)}
               <Link
                 to={`${WORKSPACES_ROUTE}/${id}`}
                 className={classes.workSpace}
-                key={id}
               >
                 <span>Name: {name}</span>
                 <span>Unique Slug: {subDomain}</span>
                 <Divider />
               </Link>
               <div className={classes.actionContainer}>
-                <Link to={`/workspace/edit/${id}`}>
+                <Link to={`${WORKSPACES_ROUTE}/edit/${id}`}>
                   <EditIcon />
                 </Link>
                 <span
@@ -153,22 +177,28 @@ const WorkSpaces = () => {
               </div>
             </div>
           ))}
-          <ReactDragDropUpload
-            className={classes.dragDrop}
-            onFileChange={fileChangeHandler}
-            loading={uploadLoading}
-            response={!!uploadQueryData}
-          />
         </Grid>
-        <Grid md={4} className={classes.createWorkSpaceBtn}>
-          <Button
-            component={Link}
-            color="primary"
-            variant="contained"
-            to="/workspace/create"
-          >
-            Create workspace
-          </Button>
+        <Grid md={5} className={classes.createWorkSpaceBtn}>
+          <Grid>
+            <Button
+              component={Link}
+              color="primary"
+              variant="contained"
+              to={`${WORKSPACES_ROUTE}/create`}
+            >
+              Create workspace
+            </Button>
+          </Grid>
+          <Grid className={classes.dragDrop}>
+            <Typography variant="h4" className={classes.typoGraphy}>
+              Upload files{" "}
+            </Typography>
+            <ReactDragDropUpload
+              onFileChange={fileChangeHandler}
+              loading={uploadLoading}
+              response={!!uploadQueryData}
+            />
+          </Grid>
         </Grid>
       </Grid>
 
@@ -183,15 +213,6 @@ const WorkSpaces = () => {
         confirmMessage="Are you sure you want to delete this workspace,and all it's related channels ?"
         cancelActionText="Cancel"
         confirmActionText="Delete"
-        cancelActionProps={{
-          textColor: DARK_BLUE_COLOR,
-          bgColor: LIGHTEN_GRAY_COLOR,
-          borderColor: GRAY_COLOR,
-        }}
-        confirmActionProps={{
-          bgColor: DARK_RED_COLOR,
-          borderColor: DARK_RED_COLOR,
-        }}
       />
     </>
   );

@@ -12,13 +12,13 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
-CREATE TABLE "WorkSpace" (
+CREATE TABLE "Workspace" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "subDomain" TEXT NOT NULL,
     "userId" INTEGER NOT NULL,
 
-    CONSTRAINT "WorkSpace_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Workspace_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -34,10 +34,10 @@ CREATE TABLE "Channel" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "WorkSpace_subDomain_key" ON "WorkSpace"("subDomain");
+CREATE UNIQUE INDEX "Workspace_subDomain_key" ON "Workspace"("subDomain");
 
 -- AddForeignKey
-ALTER TABLE "WorkSpace" ADD CONSTRAINT "WorkSpace_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Workspace" ADD CONSTRAINT "Workspace_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Channel" ADD CONSTRAINT "Channel_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "WorkSpace"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Channel" ADD CONSTRAINT "Channel_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace"("id") ON DELETE CASCADE ON UPDATE CASCADE;
