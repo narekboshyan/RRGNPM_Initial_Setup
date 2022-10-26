@@ -13,8 +13,6 @@ function App() {
   const dispatch = useDispatch();
   const { loading } = useSelector(({ shared }) => shared);
 
-  console.log(loading);
-
   const [getMe, { data }] = useLazyQueryWithOnError(GET_ME, {
     onError() {
       deleteItemFromLocalStorage("token");
@@ -48,7 +46,7 @@ function App() {
 
   return (
     <>
-      <CircularLoading text={loadingText} open={loadingOpen} />
+      <CircularLoading text={loading.text} open={loading.open} />
       <Routes />
       <SharedSnackbar />
     </>

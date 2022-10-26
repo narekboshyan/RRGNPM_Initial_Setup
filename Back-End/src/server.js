@@ -9,9 +9,12 @@ import { SomethingWentWrongError } from "./errors/SomethingWentWrongError.js";
 import { ERROR_CODES, ERROR_MESSAGES } from "./constants/errors.js";
 import { graphqlHTTP } from "express-graphql";
 import "./env.js";
+import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
 
 const app = express();
 app.use(express.json());
+
+app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 
 // ! THis is a way of doing for multiple urls
 const allowed = [
@@ -49,7 +52,6 @@ const port = process.env.PORT || 4000;
 let apolloServer = null;
 async function startServer() {
   apolloServer = new ApolloServer({
-    uploads: false,
     schema,
     context,
     introspection: true,

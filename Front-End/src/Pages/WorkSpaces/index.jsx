@@ -11,11 +11,22 @@ import Button from "components/shared/Button/Button";
 import { WORKSPACES_ROUTE } from "constants";
 import { GET_WORKSPACES } from "graphql/queries/workSpaces";
 import { useMutationWithOnError, useQueryWithOnError } from "hooks/apollo";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { DELETE_WORKSPACES } from "graphql/mutations";
+import { DELETE_WORKSPACES, UPLOAD_FILES } from "graphql/mutations";
+import { useDispatch } from "react-redux";
+import { addLoadingData, removeLoadingData } from "redux/slices/shared";
+import {
+  DARK_BLUE_COLOR,
+  DARK_RED_COLOR,
+  FETCH_LOADING_TEXT,
+  GRAY_COLOR,
+  LIGHTEN_GRAY_COLOR,
+} from "constants/index";
+import ConfirmDialog from "components/shared/dialog/ConfirmDialog";
+import ReactDragDropUpload from "components/shared/ReactDragDropUpload";
 
 const useStyles = makeStyles({
   workSpaceContainer: {
@@ -45,9 +56,21 @@ const useStyles = makeStyles({
   deleteIcon: {
     cursor: "pointer",
   },
+  createWorkSpaceBtn: {
+    padding: 10,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "end",
+    gap: 30,
+    // justifyContent: "end",
+  },
+  dragDrop: {
+    marginTop: 30,
+  },
 });
 
 const WorkSpaces = () => {
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(null);
   const {
     data: workSpaceQueryData,
     loading: workSpaceIsLoading,
@@ -57,6 +80,7 @@ const WorkSpaces = () => {
   });
 
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const [
     deleteWorkSpace,
@@ -75,11 +99,36 @@ const WorkSpaces = () => {
     refetch();
   };
 
+  const [uploadFiles, { data: uploadQueryData, loading: uploadLoading }] =
+    useMutationWithOnError(UPLOAD_FILES);
+
+  useEffect(() => {
+    if (deleteWorkSpaceIsLoading || workSpaceIsLoading) {
+      dispatch(
+        addLoadingData({
+          key: "deleteWorkSpaceIsLoading",
+          text: FETCH_LOADING_TEXT,
+          open: true,
+        })
+      );
+    } else {
+      dispatch(removeLoadingData("deleteWorkSpaceIsLoading"));
+    }
+  }, [deleteWorkSpaceIsLoading, dispatch, workSpaceIsLoading]);
+
+  const fileChangeHandler = async (files) => {
+    await uploadFiles({
+      variables: {
+        files,
+      },
+    });
+  };
+
   return (
-    <Grid container>
-      <Grid item md={8}>
-        <Typography variant="h2">WorkSpaces</Typography>
-        <Grid md={12} className={classes.workSpaceContainer}>
+    <>
+      <Typography variant="h2">WorkSpaces</Typography>
+      <Grid container>
+        <Grid md={8} className={classes.workSpaceContainer}>
           {workSpaceData.map(({ name, subDomain, id }) => (
             <div className={classes.workSpaceRow}>
               <Link
@@ -97,21 +146,54 @@ const WorkSpaces = () => {
                 </Link>
                 <span
                   className={classes.deleteIcon}
-                  onClick={() => deleteWorkspaceHandler(id)}
+                  onClick={() => setOpenConfirmDialog(id)}
                 >
                   <DeleteIcon />
                 </span>
               </div>
             </div>
           ))}
+          <ReactDragDropUpload
+            className={classes.dragDrop}
+            onFileChange={fileChangeHandler}
+            loading={uploadLoading}
+            response={!!uploadQueryData}
+          />
+        </Grid>
+        <Grid md={4} className={classes.createWorkSpaceBtn}>
+          <Button
+            component={Link}
+            color="primary"
+            variant="contained"
+            to="/workspace/create"
+          >
+            Create workspace
+          </Button>
         </Grid>
       </Grid>
-      <Grid item md={4}>
-        <Link to="/workspace/create">
-          <Button>Create workspace</Button>
-        </Link>
-      </Grid>
-    </Grid>
+
+      <ConfirmDialog
+        open={openConfirmDialog}
+        title="Delete workspace"
+        onClose={() => setOpenConfirmDialog(null)}
+        onConfirm={() => {
+          deleteWorkspaceHandler(openConfirmDialog);
+          setOpenConfirmDialog(null);
+        }}
+        confirmMessage="Are you sure you want to delete this workspace,and all it's related channels ?"
+        cancelActionText="Cancel"
+        confirmActionText="Delete"
+        cancelActionProps={{
+          textColor: DARK_BLUE_COLOR,
+          bgColor: LIGHTEN_GRAY_COLOR,
+          borderColor: GRAY_COLOR,
+        }}
+        confirmActionProps={{
+          bgColor: DARK_RED_COLOR,
+          borderColor: DARK_RED_COLOR,
+        }}
+      />
+    </>
   );
 };
 

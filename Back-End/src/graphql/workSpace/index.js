@@ -7,9 +7,18 @@ export const createEditWorkspace = async (
   try {
     const { prisma, user } = context;
 
+    const existingWorkspace = await prisma.workspace.findUnique({
+      where: {
+        subDomain,
+      },
+    });
+
+    if (existingWorkspace) {
+      throw new Error("Subdomain with this name already exists");
+    }
+
     if (id) {
-      console.log("ID EXISTS");
-      await prisma.workSpace.update({
+      await prisma.workspace.update({
         where: {
           id,
         },
@@ -19,9 +28,7 @@ export const createEditWorkspace = async (
         },
       });
     } else {
-      console.log("ID DOES NOT EXISTS");
-
-      await prisma.workSpace.create({
+      await prisma.workspace.create({
         data: {
           userId: user.id,
           name,
@@ -40,7 +47,7 @@ export const createEditWorkspace = async (
 export const getWorkSpaces = async (_parent, { id }, context) => {
   try {
     const { prisma, user } = context;
-    const workSpaces = await prisma.workSpace.findMany({
+    const workSpaces = await prisma.workspace.findMany({
       where: {
         userId: user.id,
         id,
@@ -61,7 +68,7 @@ export const getWorkSpaces = async (_parent, { id }, context) => {
 export const deleteWorkSpace = async (_parent, { id }, context) => {
   const { prisma, user } = context;
   console.log(id);
-  await prisma.workSpace.delete({
+  await prisma.workspace.delete({
     where: {
       id,
     },

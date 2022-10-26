@@ -1,12 +1,11 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Z_INDEX_INCREASED_FOR_LOADER } from "constants/index";
 import { makeStyles } from "@material-ui/core/styles";
 import { CircularProgress } from "@material-ui/core";
-import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   loaderRoot: {
-    position: ({ fullScreen }) => (fullScreen ? "fixed" : "absolute"),
+    position: "fixed",
     display: "flex",
     zIndex: theme.zIndex.drawer + Z_INDEX_INCREASED_FOR_LOADER,
     top: 0,
@@ -24,24 +23,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CircularLoading = ({ fullScreen = true }) => {
-  const classes = useStyles({ fullScreen });
-
-  const { loading } = useSelector(({ shared }) => shared);
-
-  const text = useMemo(
-    () =>
-      Object.values(loading).find((val) => val?.open)?.text || "Please wait...",
-    [loading]
-  );
-
-  const open = useMemo(
-    () => Object.values(loading).some((val) => val?.open),
-    [loading]
-  );
+const CircularLoading = ({ text = "Please wait...", open = false }) => {
+  const classes = useStyles();
 
   if (!open) {
-    return <h1>LOADING</h1>;
+    return null;
   }
 
   return (

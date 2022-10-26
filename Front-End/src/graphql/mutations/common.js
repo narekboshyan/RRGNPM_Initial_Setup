@@ -1,8 +1,8 @@
-const { gql } = require('@apollo/client');
+const { gql } = require("@apollo/client");
 
 export const UPLOAD_FILES = gql`
-  mutation uploadFiles($files: Upload!, $quotes: Boolean) {
-    uploadFiles(files: $files, quotes: $quotes)
+  mutation uploadFiles($files: Upload!) {
+    uploadFiles(files: $files)
   }
 `;
 

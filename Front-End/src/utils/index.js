@@ -39,7 +39,6 @@ export const channelReducer = (state, { type, payload }) => {
       const changedData = state.map(({ id, name }) => {
         const inputData = { id, name };
         if (id === payload.id) {
-          console.log(id, payload.id);
           inputData.name = payload.value;
         }
         return inputData;

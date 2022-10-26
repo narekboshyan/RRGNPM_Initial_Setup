@@ -9,6 +9,7 @@ import {
   deleteWorkSpace,
 } from "./workSpace/index.js";
 import { createEditChannels, getChannels } from "./channels/index.js";
+import { uploadFiles } from "./uploadFiles/index.js";
 
 const typeDefs = gql`
   ${types}
@@ -25,6 +26,7 @@ const typeDefs = gql`
     createEditWorkspace(data: WorkspaceData!): Boolean
     deleteWorkSpace(id: Int!): Boolean
     createEditChannels(data: ChannelsData): Boolean
+    uploadFiles(files: Upload!): Boolean
   }
 
   scalar DateTime
@@ -41,6 +43,7 @@ const resolvers = {
     createEditWorkspace,
     deleteWorkSpace,
     createEditChannels,
+    uploadFiles,
   },
   DateTime: DateTimeResolver,
 };

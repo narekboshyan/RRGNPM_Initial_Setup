@@ -32,6 +32,7 @@ input ChannelType{
   name: String!
   workspaceId: Int!
 }
+
 `;
 export const types = `
   type User{

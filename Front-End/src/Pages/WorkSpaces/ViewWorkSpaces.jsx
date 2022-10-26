@@ -1,11 +1,11 @@
-import { Button, Grid, makeStyles } from "@material-ui/core";
+import { Button, Grid, makeStyles, Typography } from "@material-ui/core";
 import TextField from "components/shared/Fields/TextField";
 import { WORKSPACES_ROUTE } from "constants";
 import { GET_WORKSPACES } from "graphql/queries/workSpaces";
 import { useMutationWithOnError, useQueryWithOnError } from "hooks/apollo";
 import React, { useEffect, useMemo, useReducer } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { v4 } from "uuid";
 import { channelReducer, CHANNEL_TYPE } from "utils";
 import { CREATE_EDIT_CHANNELS } from "graphql/mutations/channels";
@@ -20,6 +20,10 @@ import { useDispatch } from "react-redux";
 import { SNACKBAR_TYPE } from "constants";
 
 const useStyles = makeStyles({
+  container: {
+    marginTop: 20,
+    padding: 10,
+  },
   form: {
     display: "flex",
     flexDirection: "column",
@@ -34,12 +38,16 @@ const useStyles = makeStyles({
   btn: {
     alignSelf: "end",
   },
+  createEditWorkspaceContainer: {
+    padding: 5,
+  },
 });
 
 const ViewWorkSpaces = () => {
   const { id } = useParams();
   const classes = useStyles();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [channelsFormData, dispatchChannelsFormData] = useReducer(
     channelReducer,
@@ -103,8 +111,23 @@ const ViewWorkSpaces = () => {
     [workSpaceQueryData]
   );
 
+  const invalidChannelData = useMemo(
+    () => !!channelsFormData.find(({ name }) => !name),
+    [channelsFormData]
+  );
+
   const channelSubmitHandler = async (e) => {
     e.preventDefault();
+
+    if (invalidChannelData) {
+      dispatch(
+        addSnackbar({
+          type: SNACKBAR_TYPE.error,
+          message: "Invalid channel data",
+        })
+      );
+      return;
+    }
     await createEditChannels({
       variables: {
         data: {
@@ -124,21 +147,31 @@ const ViewWorkSpaces = () => {
       dispatch(
         addSnackbar({
           type: SNACKBAR_TYPE.success,
-          message: "You changes are successfully saved",
+          message: "Your changes are successfully saved",
         })
       );
+      navigate(WORKSPACES_ROUTE);
     }
-  }, [createEditChannelsQueryData, dispatch]);
+  }, [createEditChannelsQueryData, dispatch, navigate]);
 
   return (
     <>
-      <Button component={Link} to={WORKSPACES_ROUTE} color="primary">
+      <Button
+        component={Link}
+        to={WORKSPACES_ROUTE}
+        color="primary"
+        variant="contained"
+        className={classes.createEditWorkspaceContainer}
+      >
         Back
       </Button>
-      <Grid container>
+      <Grid container spacing={2} className={classes.container}>
         <Grid item md={6}>
-          <div>Name: {workSpaceData.name}</div>
-          <div>SubDomain: {workSpaceData.subDomain}</div>
+          <Typography variant="h4">Workspace Details</Typography>
+          <Typography variant="h5">Name: {workSpaceData.name}</Typography>
+          <Typography variant="h5">
+            SubDomain: {workSpaceData.subDomain}
+          </Typography>
         </Grid>
         <Grid item md={6}>
           <form onSubmit={channelSubmitHandler} className={classes.form}>
@@ -178,13 +211,20 @@ const ViewWorkSpaces = () => {
             ))}
             <Button
               className={classes.btn}
+              color="primary"
+              variant="outlined"
               onClick={() =>
                 dispatchChannelsFormData({ type: CHANNEL_TYPE.addChannel })
               }
             >
               Add new channel
             </Button>
-            <Button type="submit" className={classes.btn}>
+            <Button
+              type="submit"
+              className={classes.btn}
+              color="primary"
+              variant="contained"
+            >
               Submit
             </Button>
           </form>
