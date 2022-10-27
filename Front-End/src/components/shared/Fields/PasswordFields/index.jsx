@@ -4,32 +4,24 @@ import { ReactComponent as VisiblePass } from "assets/icons/password_visible_blu
 import IconButton from "components/shared/Button/IconButton";
 import TextField from "../TextField";
 
-const PasswordField = React.forwardRef(
-  ({ InputProps = {}, ...restProps }, ref) => {
-    const [isShowPassword, setIsShowPassword] = useState(false);
-    return (
-      <TextField
-        ref={ref}
-        type={isShowPassword ? "text" : "password"}
-        InputProps={{
-          endAdornment: isShowPassword ? (
-            <IconButton
-              onClick={() => setIsShowPassword(false)}
-              icon={<VisiblePass />}
-            />
-          ) : (
-            <IconButton
-              onClick={() => setIsShowPassword(true)}
-              icon={<HiddenPass />}
-            />
-          ),
-          ...InputProps,
-        }}
-        {...restProps}
-      />
-    );
-  }
-);
+const PasswordField = React.forwardRef(({ InputProps = {}, ...restProps }, ref) => {
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  return (
+    <TextField
+      ref={ref}
+      type={isShowPassword ? "text" : "password"}
+      InputProps={{
+        endAdornment: isShowPassword ? (
+          <IconButton onClick={() => setIsShowPassword(false)} icon={<VisiblePass />} />
+        ) : (
+          <IconButton onClick={() => setIsShowPassword(true)} icon={<HiddenPass />} />
+        ),
+        ...InputProps,
+      }}
+      {...restProps}
+    />
+  );
+});
 
 PasswordField.displayName = "PasswordField";
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { createSlice } from "@reduxjs/toolkit";
 import { v4 } from "uuid";
 
@@ -36,13 +37,7 @@ export const sharedSlice = createSlice({
   },
 });
 
-export const {
-  addSnackbar,
-  removeSnackbar,
-  addLoadingData,
-  removeLoadingData,
-  setHeaderFixed,
-  setHeaderShadow,
-} = sharedSlice.actions;
+export const { addSnackbar, removeSnackbar, addLoadingData, removeLoadingData, setHeaderFixed, setHeaderShadow } =
+  sharedSlice.actions;
 
 export default sharedSlice.reducer;

@@ -1,5 +1,4 @@
-import { Grid, makeStyles } from "@material-ui/core";
-import Button from "components/shared/Button/Button";
+import { Button, Grid, makeStyles } from "@material-ui/core";
 import TextField from "components/shared/Fields/TextField";
 import { FETCH_LOADING_TEXT } from "constants";
 import { SNACKBAR_TYPE } from "constants";
@@ -11,11 +10,7 @@ import React, { useMemo, useState } from "react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import {
-  addLoadingData,
-  addSnackbar,
-  removeLoadingData,
-} from "redux/slices/shared";
+import { addLoadingData, addSnackbar, removeLoadingData } from "redux/slices/shared";
 
 const useStyles = makeStyles({
   formControl: { width: "40%", margin: "50px auto" },
@@ -44,19 +39,15 @@ const CreateEditWorkSpace = () => {
   const { name, subDomain } = workSpaceData;
   const { id } = useParams();
 
-  const { data: workSpaceQueryData, loading: workSpaceIsLoading } =
-    useQueryWithOnError(GET_WORKSPACES, {
-      fetchPolicy: "no-cache",
-      variables: {
-        id: +id,
-      },
-      skip: !id,
-    });
+  const { data: workSpaceQueryData, loading: workSpaceIsLoading } = useQueryWithOnError(GET_WORKSPACES, {
+    fetchPolicy: "no-cache",
+    variables: {
+      id: +id,
+    },
+    skip: !id,
+  });
 
-  const workSpaceFetchedData = useMemo(
-    () => workSpaceQueryData?.getWorkSpaces[0] || {},
-    [workSpaceQueryData]
-  );
+  const workSpaceFetchedData = useMemo(() => workSpaceQueryData?.getWorkSpaces[0] || {}, [workSpaceQueryData]);
 
   useEffect(() => {
     if (workSpaceQueryData?.getWorkSpaces) {
@@ -65,10 +56,8 @@ const CreateEditWorkSpace = () => {
     }
   }, [workSpaceFetchedData, workSpaceQueryData]);
 
-  const [
-    createEditWorkspace,
-    { data: signInQueryData, loading: signInIsLoading },
-  ] = useMutationWithOnError(CREATE_WORKSPACES);
+  const [createEditWorkspace, { data: signInQueryData, loading: signInIsLoading }] =
+    useMutationWithOnError(CREATE_WORKSPACES);
 
   useEffect(() => {
     if (signInQueryData) {
@@ -118,13 +107,7 @@ const CreateEditWorkSpace = () => {
 
   return (
     <Grid className={classes.createEditWorkspaceContainer}>
-      <Button
-        component={Link}
-        to={WORKSPACES_ROUTE}
-        type="submit"
-        color="primary"
-        variant="contained"
-      >
+      <Button component={Link} to={WORKSPACES_ROUTE} type="submit" color="primary" variant="contained">
         Back
       </Button>
       <div className={classes.formControl}>

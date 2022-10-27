@@ -8,8 +8,9 @@ export const uploadFiles = async (parent, { files }, context) => {
     const allFiles = response.map(({ file }) => file);
     const __dirname = resolve();
     const filesData = [];
+    console.log(allFiles);
 
-    for (const { filename, createReadStream } of allFiles) {
+    for (const { filename, createReadStream, mimetype } of allFiles) {
       const pathname = path.join(__dirname, `/src/uploads/${filename}`);
       const stream = createReadStream();
       stream.pipe(createWriteStream(pathname));
@@ -22,7 +23,7 @@ export const uploadFiles = async (parent, { files }, context) => {
               encoding: "base64",
             }
           ),
-          type: res[i].mimetype,
+          type: mimetype,
           disposition: "attachment",
         });
       });

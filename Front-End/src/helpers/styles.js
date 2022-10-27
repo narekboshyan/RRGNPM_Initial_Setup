@@ -6,10 +6,10 @@ import {
   LIGHT_BLUE_DISABLED_COLOR,
   DARK_RED_DISABLED_COLOR,
   DARK_GREEN_COLOR,
-  DARK_GREEN_DISABLED_COLOR
-} from 'constants/index';
+  DARK_GREEN_DISABLED_COLOR,
+} from "constants/index";
 
-export const getDisabledButtonBgColor = bgColor => {
+export const getDisabledButtonBgColor = (bgColor) => {
   switch (bgColor) {
     case LIGHT_BLUE_COLOR:
       return LIGHT_BLUE_DISABLED_COLOR;
@@ -22,7 +22,7 @@ export const getDisabledButtonBgColor = bgColor => {
   }
 };
 
-export const getDisabledButtonBorderColor = borderColor => {
+export const getDisabledButtonBorderColor = (borderColor) => {
   switch (borderColor) {
     case LIGHT_BLUE_COLOR:
       return LIGHT_BLUE_DISABLED_COLOR;

@@ -15,12 +15,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { v4 } from "uuid";
 import { channelReducer, CHANNEL_TYPE } from "utils";
 import { CREATE_EDIT_CHANNELS } from "graphql/mutations/channels";
-import { GET_CHANNELS } from "graphql/queries/channels";
-import {
-  addLoadingData,
-  addSnackbar,
-  removeLoadingData,
-} from "redux/slices/shared";
+import { addLoadingData, addSnackbar, removeLoadingData } from "redux/slices/shared";
 import { FETCH_LOADING_TEXT } from "constants";
 import { useDispatch } from "react-redux";
 import { SNACKBAR_TYPE } from "constants";
@@ -44,6 +39,8 @@ const useStyles = makeStyles({
   },
   btn: {
     alignSelf: "end",
+    cursor: "pointer",
+    padding: 5,
   },
   createEditWorkspaceContainer: {
     padding: 5,
@@ -57,16 +54,13 @@ const ViewWorkSpaces = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [channelsFormData, dispatchChannelsFormData] = useReducer(
-    channelReducer,
-    [
-      {
-        id: v4(),
-        name: "",
-        workspaceId: +id,
-      },
-    ]
-  );
+  const [channelsFormData, dispatchChannelsFormData] = useReducer(channelReducer, [
+    {
+      id: v4(),
+      name: "",
+      workspaceId: +id,
+    },
+  ]);
 
   const {
     data: workSpaceQueryData,
@@ -79,10 +73,7 @@ const ViewWorkSpaces = () => {
     },
   });
 
-  const channels = useMemo(
-    () => workSpaceQueryData?.getWorkSpaces[0]?.channels || [],
-    [workSpaceQueryData]
-  );
+  const channels = useMemo(() => workSpaceQueryData?.getWorkSpaces[0]?.channels || [], [workSpaceQueryData]);
 
   useEffect(() => {
     if (workSpaceQueryData?.getWorkSpaces[0]?.channels.length) {
@@ -95,10 +86,8 @@ const ViewWorkSpaces = () => {
     }
   }, [channels, workSpaceQueryData]);
 
-  const [
-    createEditChannels,
-    { data: createEditChannelsQueryData, loading: createEditIsLoading },
-  ] = useMutationWithOnError(CREATE_EDIT_CHANNELS);
+  const [createEditChannels, { data: createEditChannelsQueryData, loading: createEditIsLoading }] =
+    useMutationWithOnError(CREATE_EDIT_CHANNELS);
 
   const [
     inviteUser,
@@ -119,15 +108,9 @@ const ViewWorkSpaces = () => {
     }
   }, [createEditIsLoading, dispatch, workSpaceIsLoading]);
 
-  const workSpaceData = useMemo(
-    () => workSpaceQueryData?.getWorkSpaces[0] || {},
-    [workSpaceQueryData]
-  );
+  const workSpaceData = useMemo(() => workSpaceQueryData?.getWorkSpaces[0] || {}, [workSpaceQueryData]);
 
-  const invalidChannelData = useMemo(
-    () => !!channelsFormData.find(({ name }) => !name),
-    [channelsFormData]
-  );
+  const invalidChannelData = useMemo(() => !!channelsFormData.find(({ name }) => !name), [channelsFormData]);
 
   const channelSubmitHandler = async (e) => {
     e.preventDefault();
@@ -192,9 +175,7 @@ const ViewWorkSpaces = () => {
         <Grid item md={4}>
           <Typography variant="h4">Workspace Details</Typography>
           <Typography variant="h5">Name: {workSpaceData.name}</Typography>
-          <Typography variant="h5">
-            SubDomain: {workSpaceData.subDomain}
-          </Typography>
+          <Typography variant="h5">SubDomain: {workSpaceData.subDomain}</Typography>
         </Grid>
         <Grid item md={4}>
           <form onSubmit={channelSubmitHandler} className={classes.form}>
@@ -236,18 +217,11 @@ const ViewWorkSpaces = () => {
               className={classes.btn}
               color="primary"
               variant="outlined"
-              onClick={() =>
-                dispatchChannelsFormData({ type: CHANNEL_TYPE.addChannel })
-              }
+              onClick={() => dispatchChannelsFormData({ type: CHANNEL_TYPE.addChannel })}
             >
               Add new channel
             </Button>
-            <Button
-              type="submit"
-              className={classes.btn}
-              color="primary"
-              variant="contained"
-            >
+            <Button type="submit" className={classes.btn} color="primary" variant="contained">
               Submit
             </Button>
           </form>
