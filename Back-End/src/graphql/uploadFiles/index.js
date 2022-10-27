@@ -1,5 +1,6 @@
-import fs from "fs";
-import path, { resolve } from "path";
+import fs, { createWriteStream, readFileSync } from "fs";
+import path, { resolve, parse, join } from "path";
+import AWS from "aws-sdk";
 
 export const uploadFiles = async (parent, { files }, context) => {
   try {
@@ -11,11 +12,11 @@ export const uploadFiles = async (parent, { files }, context) => {
     for (const { filename, createReadStream } of allFiles) {
       const pathname = path.join(__dirname, `/src/uploads/${filename}`);
       const stream = createReadStream();
-      stream.pipe(fs.createWriteStream(pathname));
+      stream.pipe(createWriteStream(pathname));
       stream.on("end", async () => {
         filesData.push({
           filename,
-          content: fs.readFileSync(
+          content: readFileSync(
             path.join(__dirname, `/src/uploads/files/${filename}`),
             {
               encoding: "base64",

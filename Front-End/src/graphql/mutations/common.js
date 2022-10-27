@@ -6,6 +6,12 @@ export const UPLOAD_FILES = gql`
   }
 `;
 
+export const INVITE_USER = gql`
+  mutation inviteUser($invitedUserEmail: String!, $workspaceId: Int!) {
+    inviteUser(invitedUserEmail: $invitedUserEmail, workspaceId: $workspaceId)
+  }
+`;
+
 export const SEND_MESSAGE = gql`
   mutation sendMessage($message: String) {
     sendMessage(message: $message)

@@ -49,13 +49,19 @@ export const getWorkSpaces = async (_parent, { id }, context) => {
     const { prisma, user } = context;
     const workSpaces = await prisma.workspace.findMany({
       where: {
-        userId: user.id,
+        users: {
+          every: {
+            userId: user.id,
+          },
+        },
         id,
       },
       include: {
         channels: true,
       },
     });
+
+    console.log(workSpaces, "workSpaces");
 
     return workSpaces;
   } catch (error) {

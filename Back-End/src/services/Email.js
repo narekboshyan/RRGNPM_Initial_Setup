@@ -1,105 +1,49 @@
-import sgMail from '@sendgrid/mail';
+import nodemailer from "nodemailer";
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const service = "google";
+const auth = {
+  user: "narek.boshyan@gmail.com",
+  pass: "wcponxmxmwyjjrmf",
+};
+const from = "narek.boshyan@gmail.com";
 
-class Email {
-  static formatEmails(emails) {
-    return emails?.map((email) => ({ email }));
-  }
+export const sendEmail = (
+  sentInvitedUserFullName,
+  to,
+  invitationCode,
+  workspaceName
+) => {
+  console.log("THIS IS CALLING SEND_EMAIL");
+  try {
+    console.log(auth, service, from);
 
-  sendConfirmationEmail(email, confirmationCode, firstName) {
-    return this.sendEmail(email, {
-      template_id: 'd-35e3cbf1263a48b783f2c5deac2aac25',
-      personalizations: [
-        {
-          to: email,
-          dynamic_template_data: {
-            confirmationCode,
-            firstName,
-            link: `${process.env.APP_URL}/signin?confirmCode=${confirmationCode}`,
-          },
-        },
-      ],
+    const transporter = nodemailer.createTransport({
+      service,
+      auth,
+      host: "smtp.gmail.com",
+      secure: true,
     });
-  }
 
-  sendForgotPasswordEmail(email, changePasswordId) {
-    return this.sendEmail(email, {
-      template_id: 'd-b5f671c94c2245879f02c749d487bc95',
-      personalizations: [
-        {
-          to: email,
-          dynamic_template_data: {
-            changePasswordId,
-          },
-        },
-      ],
-    });
-  }
+    const mailOptions = {
+      from,
+      to,
+      subject: "Invite user to workspace Application",
+      text: "TEXT",
+      html: `
+          <div>Hi,${sentInvitedUserFullName} has invited you to ${workspaceName} workspace. Please <a href="http://localhost:3000/signin?invitationCode=${invitationCode}">click this link to go and register</a> 
+        `,
+    };
 
-  sendSetUserPasswordEmail(email, firstName, token) {
-    return this.sendEmail(email, {
-      template_id: 'd-7a66b25d8c8d4d3bb60d63478c35f841',
-      personalizations: [
-        {
-          to: email,
-          dynamic_template_data: {
-            firstName,
-            link: `${process.env.APP_URL}/set-password?token=${token}`,
-          },
-        },
-      ],
-    });
-  }
-
-  sendFilesEmail(email, attachments, senderEmail) {
-    return this.sendEmail(email, {
-      template_id: 'd-d14db1954e2c4be68c3e68c5ad8c7d0b',
-      to: email,
-      attachments,
-      personalizations: [
-        {
-          to: email,
-          dynamic_template_data: {
-            from: senderEmail,
-          },
-        },
-      ],
-    });
-  }
-
-  sendMessageEmail(message, sender) {
-    return this.sendEmail(process.env.SEND_FILES_FROM_QUOTES_EMAIL_ADDRESS, {
-      template_id: 'd-1b72feb048704c03beca0e16be078cc8',
-      personalizations: [
-        {
-          to: process.env.SEND_FILES_FROM_QUOTES_EMAIL_ADDRESS,
-          dynamic_template_data: {
-            sender,
-            message,
-          },
-        },
-      ],
-    });
-  }
-
-  // eslint-disable-next-line
-  async sendEmail(to, data = {}, from = `matt.froehlich@flashco.com`) {
-    try {
-      const message = {
-        to,
-        from,
-        ...data,
-      };
-      const emailData = await sgMail.send(message);
-      return emailData;
-    } catch (error) {
-      if (error.response) {
-        console.error(error.response.body);
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email was sent successfully: " + info.response);
       }
+    });
+  } catch (error) {
+    if (error.response) {
+      console.error(error.response.body);
     }
   }
-}
-const instance = new Email();
-
-export { instance as Email };
+};

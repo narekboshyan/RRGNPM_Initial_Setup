@@ -1,9 +1,15 @@
-import { Button, Grid, makeStyles, Typography } from "@material-ui/core";
+import {
+  Button,
+  Divider,
+  Grid,
+  makeStyles,
+  Typography,
+} from "@material-ui/core";
 import TextField from "components/shared/Fields/TextField";
 import { WORKSPACES_ROUTE } from "constants";
 import { GET_WORKSPACES } from "graphql/queries/workSpaces";
 import { useMutationWithOnError, useQueryWithOnError } from "hooks/apollo";
-import React, { useEffect, useMemo, useReducer } from "react";
+import React, { useEffect, useMemo, useReducer, useState } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { v4 } from "uuid";
@@ -18,6 +24,7 @@ import {
 import { FETCH_LOADING_TEXT } from "constants";
 import { useDispatch } from "react-redux";
 import { SNACKBAR_TYPE } from "constants";
+import { INVITE_USER } from "graphql/mutations";
 
 const useStyles = makeStyles({
   container: {
@@ -44,6 +51,7 @@ const useStyles = makeStyles({
 });
 
 const ViewWorkSpaces = () => {
+  const [userEmail, setUserEmail] = useState("");
   const { id } = useParams();
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -91,6 +99,11 @@ const ViewWorkSpaces = () => {
     createEditChannels,
     { data: createEditChannelsQueryData, loading: createEditIsLoading },
   ] = useMutationWithOnError(CREATE_EDIT_CHANNELS);
+
+  const [
+    inviteUser,
+    { data: inviteUserQueryData, loading: inviteUserIsLoading },
+  ] = useMutationWithOnError(INVITE_USER);
 
   useEffect(() => {
     if (createEditIsLoading || workSpaceIsLoading) {
@@ -154,6 +167,16 @@ const ViewWorkSpaces = () => {
     }
   }, [createEditChannelsQueryData, dispatch, navigate]);
 
+  const inviteUserSubmitHandler = async (e) => {
+    e.preventDefault();
+    await inviteUser({
+      variables: {
+        invitedUserEmail: userEmail,
+        workspaceId: +id,
+      },
+    });
+  };
+
   return (
     <>
       <Button
@@ -166,14 +189,14 @@ const ViewWorkSpaces = () => {
         Back
       </Button>
       <Grid container spacing={2} className={classes.container}>
-        <Grid item md={6}>
+        <Grid item md={4}>
           <Typography variant="h4">Workspace Details</Typography>
           <Typography variant="h5">Name: {workSpaceData.name}</Typography>
           <Typography variant="h5">
             SubDomain: {workSpaceData.subDomain}
           </Typography>
         </Grid>
-        <Grid item md={6}>
+        <Grid item md={4}>
           <form onSubmit={channelSubmitHandler} className={classes.form}>
             {channelsFormData.map(({ name, id }) => (
               <div className={classes.formGroup} key={id}>
@@ -226,6 +249,30 @@ const ViewWorkSpaces = () => {
               variant="contained"
             >
               Submit
+            </Button>
+          </form>
+        </Grid>
+        <Grid item md={4}>
+          <Divider />
+          <Typography variant="h4" className={classes.typoGraphy}>
+            Invite User
+          </Typography>
+          <form onSubmit={inviteUserSubmitHandler}>
+            <TextField
+              required
+              formControlClassName={classes.field}
+              placeholder="Enter user email"
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
+              label="Fill user email"
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              className={classes.inviteUserBtn}
+            >
+              Invite user
             </Button>
           </form>
         </Grid>

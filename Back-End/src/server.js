@@ -14,8 +14,6 @@ import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
 const app = express();
 app.use(express.json());
 
-app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
-
 // ! THis is a way of doing for multiple urls
 const allowed = [
   "http://localhost:3000",
@@ -51,6 +49,7 @@ const port = process.env.PORT || 4000;
 
 let apolloServer = null;
 async function startServer() {
+  app.use(graphqlUploadExpress());
   apolloServer = new ApolloServer({
     schema,
     context,
