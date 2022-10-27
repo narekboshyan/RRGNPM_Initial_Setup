@@ -1,10 +1,4 @@
-import {
-  Button,
-  Divider,
-  Grid,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
+import { Button, Divider, Grid, makeStyles, Typography } from "@material-ui/core";
 import TextField from "components/shared/Fields/TextField";
 import { WORKSPACES_ROUTE } from "constants";
 import { GET_WORKSPACES } from "graphql/queries/workSpaces";
@@ -89,13 +83,21 @@ const ViewWorkSpaces = () => {
   const [createEditChannels, { data: createEditChannelsQueryData, loading: createEditIsLoading }] =
     useMutationWithOnError(CREATE_EDIT_CHANNELS);
 
-  const [
-    inviteUser,
-    { data: inviteUserQueryData, loading: inviteUserIsLoading },
-  ] = useMutationWithOnError(INVITE_USER);
+  const [inviteUser, { data: inviteUserQueryData, loading: inviteUserIsLoading }] = useMutationWithOnError(INVITE_USER);
 
   useEffect(() => {
-    if (createEditIsLoading || workSpaceIsLoading) {
+    if (inviteUserQueryData?.inviteUser) {
+      dispatch(
+        addSnackbar({
+          type: SNACKBAR_TYPE.success,
+          message: "User has been successfully invited",
+        })
+      );
+    }
+  }, [inviteUserQueryData, dispatch]);
+
+  useEffect(() => {
+    if (createEditIsLoading || workSpaceIsLoading || inviteUserIsLoading) {
       dispatch(
         addLoadingData({
           key: "createEditIsLoading",
@@ -106,7 +108,7 @@ const ViewWorkSpaces = () => {
     } else {
       dispatch(removeLoadingData("createEditIsLoading"));
     }
-  }, [createEditIsLoading, dispatch, workSpaceIsLoading]);
+  }, [createEditIsLoading, dispatch, workSpaceIsLoading, inviteUserIsLoading]);
 
   const workSpaceData = useMemo(() => workSpaceQueryData?.getWorkSpaces[0] || {}, [workSpaceQueryData]);
 
@@ -240,12 +242,7 @@ const ViewWorkSpaces = () => {
               onChange={(e) => setUserEmail(e.target.value)}
               label="Fill user email"
             />
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              className={classes.inviteUserBtn}
-            >
+            <Button variant="contained" color="primary" type="submit" className={classes.inviteUserBtn}>
               Invite user
             </Button>
           </form>

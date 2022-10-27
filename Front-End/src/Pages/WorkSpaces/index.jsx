@@ -6,17 +6,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import {
-  DELETE_WORKSPACES,
-  INVITE_USER,
-  UPLOAD_FILES,
-} from "graphql/mutations";
+import { DELETE_WORKSPACES, UPLOAD_FILES } from "graphql/mutations";
 import { useDispatch } from "react-redux";
 import { addLoadingData, addSnackbar, removeLoadingData } from "redux/slices/shared";
 import { SNACKBAR_TYPE, FETCH_LOADING_TEXT } from "constants/index";
 import ConfirmDialog from "components/shared/dialog/ConfirmDialog";
 import ReactDragDropUpload from "components/shared/ReactDragDropUpload";
-import TextField from "components/shared/Fields/TextField";
 
 const useStyles = makeStyles({
   workSpaceContainer: {
