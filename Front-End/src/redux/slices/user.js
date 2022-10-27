@@ -15,6 +15,7 @@ export const userSlice = createSlice({
       if (token) {
         setItemToLocalStorage("token", token);
       }
+      // eslint-disable-next-line no-param-reassign
       state.user = rest;
     },
   },

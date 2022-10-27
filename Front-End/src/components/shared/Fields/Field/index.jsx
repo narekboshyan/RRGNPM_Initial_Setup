@@ -2,15 +2,7 @@ import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  FormControl,
-  Select,
-  TextField,
-  OutlinedInput,
-  InputAdornment,
-  FormHelperText,
-} from "@material-ui/core";
-import WhiteCardTooltip from "components/shared/tooltip/WhiteCardTooltip";
+import { FormControl, Select, TextField, OutlinedInput, InputAdornment, FormHelperText } from "@material-ui/core";
 import { ReactComponent as ChevronUpIcon } from "assets/icons/chevron_up.svg";
 import { ReactComponent as ChevronDownIcon } from "assets/icons/chevron_down.svg";
 import { ReactComponent as ChevronUpSmallIcon } from "assets/icons/chevron_up_small.svg";
@@ -21,14 +13,7 @@ import { ReactComponent as CloseIcon } from "assets/icons/close_icon.svg";
 import { ReactComponent as WarningIcon } from "assets/icons/warning_icon_16.svg";
 import { useFieldStyles } from "styles/Field";
 import { useMenuStyles } from "styles/Menu";
-import {
-  LIGHT_GRAY_COLOR,
-  ORANGE_COLOR,
-  DARK_BLUE_COLOR,
-  PICKER_TYPE,
-  FIELD_TYPE,
-  FIELD_SIZE,
-} from "constants/index";
+import { LIGHT_GRAY_COLOR, ORANGE_COLOR, DARK_BLUE_COLOR, PICKER_TYPE, FIELD_TYPE, FIELD_SIZE } from "constants/index";
 
 const useStyles = makeStyles({
   formControl: {
@@ -106,89 +91,45 @@ const useStyles = makeStyles({
 
 export const ChevronUp = () => {
   const classes = useStyles();
-  return (
-    <ChevronUpIcon
-      width="30"
-      height="30"
-      className={clsx(classes.icon, classes.chevron)}
-    />
-  );
+  return <ChevronUpIcon width="30" height="30" className={clsx(classes.icon, classes.chevron)} />;
 };
 
 export const ChevronUpSmall = () => {
   const classes = useStyles();
-  return (
-    <ChevronUpSmallIcon
-      width="30"
-      height="30"
-      className={clsx(classes.icon, classes.chevronSmall)}
-    />
-  );
+  return <ChevronUpSmallIcon width="30" height="30" className={clsx(classes.icon, classes.chevronSmall)} />;
 };
 
 export const ChevronDown = () => {
   const classes = useStyles();
-  return (
-    <ChevronDownIcon
-      width="30"
-      height="30"
-      className={clsx(classes.icon, classes.chevron)}
-    />
-  );
+  return <ChevronDownIcon width="30" height="30" className={clsx(classes.icon, classes.chevron)} />;
 };
 
 export const ChevronDownSmall = () => {
   const classes = useStyles();
-  return (
-    <ChevronDownSmallIcon
-      width="30"
-      height="30"
-      className={clsx(classes.icon, classes.chevronSmall)}
-    />
-  );
+  return <ChevronDownSmallIcon width="30" height="30" className={clsx(classes.icon, classes.chevronSmall)} />;
 };
 
 export const DateRange = () => {
   const classes = useStyles();
-  return (
-    <DateRangeIcon
-      width="30"
-      height="30"
-      className={clsx(classes.icon, classes.dateRange)}
-    />
-  );
+  return <DateRangeIcon width="30" height="30" className={clsx(classes.icon, classes.dateRange)} />;
 };
 
 export const WarningSmall = (props) => {
   const { width = "16", height = "16", ...rest } = props;
   const classes = useStyles();
-  return (
-    <WarningIcon
-      width={width}
-      height={height}
-      className={classes.warning}
-      {...rest}
-    />
-  );
+  return <WarningIcon width={width} height={height} className={classes.warning} {...rest} />;
 };
 
 export const Search = (props) => {
   const { width, height, ...rest } = props;
   const classes = useStyles();
-  return (
-    <SearchIcon
-      width={width || "30"}
-      height={height || "30"}
-      className={classes.icon}
-      {...rest}
-    />
-  );
+  return <SearchIcon width={width || "30"} height={height || "30"} className={classes.icon} {...rest} />;
 };
 
 const Field = React.forwardRef((props, ref) => {
   const {
-    pickerType = PICKER_TYPE.select,
-    fieldType = FIELD_TYPE.select,
+    pickerType = PICKER_TYPE?.select,
+    fieldType = FIELD_TYPE?.select,
     label = "",
     labelAction = "",
     options = [],
@@ -201,16 +142,8 @@ const Field = React.forwardRef((props, ref) => {
     selectClasses = {},
     onChange = () => {},
     value = "",
-    selectProps: {
-      error: selectError,
-      helperText: selectHelperText,
-      onClose = () => {},
-      ...restSelectProps
-    } = {},
-    fieldLabelProps: {
-      className: fieldLabelClassName = "",
-      ...fieldLabelRestProps
-    } = {},
+    selectProps: { error: selectError, helperText: selectHelperText, onClose = () => {}, ...restSelectProps } = {},
+    fieldLabelProps: { className: fieldLabelClassName = "", ...fieldLabelRestProps } = {},
     formControlClassName = "",
     formControlStyle = {},
     fieldSize = FIELD_SIZE.sm,
@@ -219,11 +152,7 @@ const Field = React.forwardRef((props, ref) => {
     helperText = "",
     error = false,
     warning = false,
-    warningConfig: {
-      showIcon = true,
-      warningText = "",
-      tooltipProps = {},
-    } = {},
+    warningConfig: { showIcon = true } = {},
     ...restProps
   } = props;
   const classes = useStyles();
@@ -330,11 +259,7 @@ const Field = React.forwardRef((props, ref) => {
       >
         {options}
       </Select>
-      {!!selectHelperText && (
-        <FormHelperText className={classes.formHelperText}>
-          {selectHelperText}
-        </FormHelperText>
-      )}
+      {!!selectHelperText && <FormHelperText className={classes.formHelperText}>{selectHelperText}</FormHelperText>}
     </FormControl>
   );
 
@@ -380,27 +305,6 @@ const Field = React.forwardRef((props, ref) => {
           {...(warning && showIcon
             ? {
                 InputProps: {
-                  endAdornment: (
-                    <WhiteCardTooltip
-                      interactive
-                      {...(!warningText ? { open: false } : {})}
-                      title={
-                        <span className={classes.warningTooltipText}>
-                          {warningText}
-                        </span>
-                      }
-                      classes={{
-                        tooltip: classes.warningTooltip,
-                        popper: classes.warningTooltipPopper,
-                      }}
-                      placement="bottom-end"
-                      {...tooltipProps}
-                    >
-                      <InputAdornment position="end">
-                        <WarningSmall cursor={!!warningText && "pointer"} />
-                      </InputAdornment>
-                    </WhiteCardTooltip>
-                  ),
                   classes: { root: classes.warningInputRoot },
                   ...(InputProps || {}),
                 },
@@ -460,20 +364,14 @@ const Field = React.forwardRef((props, ref) => {
               <Search />
             </InputAdornment>
           }
-          className={`${classes.formControl} ${
-            fieldSize === FIELD_SIZE.xs ? fieldStyles.fieldXs : ""
-          } ${className}`}
+          className={`${classes.formControl} ${fieldSize === FIELD_SIZE.xs ? fieldStyles.fieldXs : ""} ${className}`}
           {...restProps}
           inputProps={{
             required: false,
             ...(restProps.inputProps || {}),
           }}
         />
-        {!!helperText && (
-          <FormHelperText classes={{ root: classes.formHelperText }}>
-            {helperText}
-          </FormHelperText>
-        )}
+        {!!helperText && <FormHelperText classes={{ root: classes.formHelperText }}>{helperText}</FormHelperText>}
       </FormControl>
     );
   }

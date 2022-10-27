@@ -1,33 +1,16 @@
 import TextField from "components/shared/Fields/TextField";
 import React, { useEffect, useState } from "react";
-import Button from "components/shared/Button/Button";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid, Typography } from "@material-ui/core";
+import { Button, Grid, Typography } from "@material-ui/core";
 import PasswordField from "components/shared/Fields/PasswordFields";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { addUserData } from "redux/slices/user";
-import {
-  DARK_BLUE_COLOR,
-  LIGHT_BLUE_COLOR,
-  WHITE_COLOR,
-  FETCH_LOADING_TEXT,
-  SNACKBAR_TYPE,
-  WORKSPACES_ROUTE,
-} from "constants/index";
-import {
-  EMAIL_CONFIRMATION,
-  SIGN_IN,
-  TWO_FACTOR_AUTH,
-} from "graphql/mutations/auth";
+import { DARK_BLUE_COLOR, FETCH_LOADING_TEXT, WORKSPACES_ROUTE } from "constants/index";
+import { SIGN_IN } from "graphql/mutations/auth";
 import { useDispatch } from "react-redux";
-import {
-  addLoadingData,
-  addSnackbar,
-  removeLoadingData,
-} from "redux/slices/shared";
-import { useFetchMutation } from "hooks/useFetch";
-import AddUser from "components/shared/AddUser";
+import { addLoadingData, removeLoadingData } from "redux/slices/shared";
+import { useMutationWithOnError } from "hooks/apollo";
 
 const useStyles = makeStyles(() => ({
   confirmationContainer: {
@@ -95,33 +78,16 @@ const useStyles = makeStyles(() => ({
 const SignIn = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { search } = useLocation();
-  const [confirmCode, setConfirmCode] = useState("");
-  const [openConfirmationMessage, setOpenConfirmationMessage] = useState(false);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const {
-    mutation: signIn,
-    data: signInQueryData,
-    loading: signInIsLoading,
-  } = useFetchMutation(SIGN_IN);
+
+  const [signIn, { data: signInQueryData, loading: signInIsLoading }] = useMutationWithOnError(SIGN_IN);
 
   const { email, password } = formData;
   const classes = useStyles();
-
-  // useEffect(() => {
-  //   if (search) {
-  //     (async () => {
-  //       await confirmEmail({
-  //         variables: {
-  //           confirmationCode: +new URLSearchParams(search).get("confirmCode"),
-  //         },
-  //       });
-  //     })();
-  //   }
-  // }, [search, confirmEmail]);
 
   useEffect(() => {
     if (signInIsLoading) {
@@ -159,11 +125,9 @@ const SignIn = () => {
     <>
       <Grid sx={{ height: "100vh", overflow: "hidden" }}>
         <div className={classes.topPartRoot}>
-          <div className={classes.checkAccountText}>
-            Don&apos;t have an account?
-          </div>
+          <div className={classes.checkAccountText}>Don&apos;t have an account?</div>
           <Link to="/signup" className={classes.link}>
-            <Button textColor={LIGHT_BLUE_COLOR} bgColor={WHITE_COLOR}>
+            <Button variant="contained" color="primary">
               SIGN UP
             </Button>
           </Link>
@@ -212,23 +176,7 @@ const SignIn = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <div className={classes.forgotPassword}>
-                  <Link
-                    data-cy="recoverPassword"
-                    className={classes.forgotPasswordLink}
-                    to="/recover-password"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
-              </Grid>
-              <Grid item xs={12}>
-                <Button
-                  data-cy="signInButton"
-                  className={classes.submit}
-                  type="submit"
-                  fullWidth
-                >
+                <Button variant="contained" color="primary" className={classes.submit} type="submit" fullWidth>
                   Sign In
                 </Button>
               </Grid>

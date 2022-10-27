@@ -1,14 +1,14 @@
-import React from 'react';
-import { Page, Document, pdfjs } from 'react-pdf';
-import flashForm from 'assets/FlashForm.pdf';
-import MainDialog from '../dialog/MainDialog';
+import React from "react";
+import { Page, Document, pdfjs } from "react-pdf";
+import flashForm from "assets/FlashForm.pdf";
+import MainDialog from "../dialog/MainDialog";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const options = {
-  cMapUrl: 'cmaps/',
+  cMapUrl: "cmaps/",
   cMapPacked: true,
-  standardFontDataUrl: 'standard_fonts/'
+  standardFontDataUrl: "standard_fonts/",
 };
 
 const ViewDownloadPDF = ({ openPreview, onClose = () => {} }) => {

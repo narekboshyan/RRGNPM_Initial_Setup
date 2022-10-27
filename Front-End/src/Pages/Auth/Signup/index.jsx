@@ -1,17 +1,12 @@
 import TextField from "components/shared/Fields/TextField";
 import React, { useEffect, useState } from "react";
-import Button from "components/shared/Button/Button";
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid, Typography } from "@material-ui/core";
+import { Button, Grid, Typography } from "@material-ui/core";
 import PasswordField from "components/shared/Fields/PasswordFields";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutationWithOnError } from "hooks/apollo";
 import { SIGN_UP } from "graphql/mutations/auth";
-import {
-  addLoadingData,
-  addSnackbar,
-  removeLoadingData,
-} from "redux/slices/shared";
+import { addLoadingData, addSnackbar, removeLoadingData } from "redux/slices/shared";
 import { useDispatch } from "react-redux";
 import {
   FETCH_LOADING_TEXT,
@@ -20,6 +15,7 @@ import {
   WHITE_COLOR,
   SNACKBAR_TYPE,
   SIGN_IN_ROUTE,
+  SNACKBAR_MESSAGES,
 } from "constants/index";
 
 const useStyles = makeStyles(() => ({
@@ -93,8 +89,7 @@ const SignUp = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const [signupUser, { data: signUpData, loading: signUpLoading }] =
-    useMutationWithOnError(SIGN_UP);
+  const [signupUser, { data: signUpData, loading: signUpLoading }] = useMutationWithOnError(SIGN_UP);
 
   useEffect(() => {
     if (signUpLoading) {
@@ -115,7 +110,7 @@ const SignUp = () => {
       dispatch(
         addSnackbar({
           type: SNACKBAR_TYPE.success,
-          message: "You have successfully signed up",
+          message: SNACKBAR_MESSAGES.successfullySignedUp,
         })
       );
       navigate(SIGN_IN_ROUTE);
@@ -137,9 +132,7 @@ const SignUp = () => {
     <>
       <Grid container sx={{ height: "100vh", overflow: "hidden" }}>
         <div className={classes.topPartRoot}>
-          <div className={classes.checkAccountText}>
-            Already have an account?
-          </div>
+          <div className={classes.checkAccountText}>Already have an account?</div>
           <Link to={SIGN_IN_ROUTE} className={classes.link}>
             <Button textColor={LIGHT_BLUE_COLOR} bgColor={WHITE_COLOR}>
               SIGN IN
@@ -212,12 +205,7 @@ const SignUp = () => {
               </Grid>
 
               <Grid item xs={12}>
-                <Button
-                  data-cy="signInButton"
-                  className={classes.submit}
-                  type="submit"
-                  fullWidth
-                >
+                <Button className={classes.submit} variant="contained" color="primary" fullWidth>
                   Sign Up
                 </Button>
               </Grid>

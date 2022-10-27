@@ -6,10 +6,9 @@ import { Provider } from "react-redux";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "apollo";
 import { store } from "redux/store";
-import "./index.scss";
+import "./index.css";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import CircularLoading from "components/shared/Loading";
 
 const container = document.getElementById("root");
 const root = createRoot(container);

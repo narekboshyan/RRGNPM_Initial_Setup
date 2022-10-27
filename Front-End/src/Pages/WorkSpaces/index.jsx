@@ -1,13 +1,4 @@
-import {
-  Divider,
-  Grid,
-  ListItem,
-  ListItemText,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
-import { List } from "@material-ui/icons";
-import Button from "components/shared/Button/Button";
+import { Button, Divider, Grid, makeStyles, Typography } from "@material-ui/core";
 import { WORKSPACES_ROUTE } from "constants";
 import { GET_WORKSPACES } from "graphql/queries/workSpaces";
 import { useMutationWithOnError, useQueryWithOnError } from "hooks/apollo";
@@ -17,17 +8,8 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { DELETE_WORKSPACES, UPLOAD_FILES } from "graphql/mutations";
 import { useDispatch } from "react-redux";
-import {
-  addLoadingData,
-  addSnackbar,
-  removeLoadingData,
-} from "redux/slices/shared";
-import {
-  SNACKBAR_TYPE,
-  FETCH_LOADING_TEXT,
-  GRAY_COLOR,
-  LIGHTEN_GRAY_COLOR,
-} from "constants/index";
+import { addLoadingData, addSnackbar, removeLoadingData } from "redux/slices/shared";
+import { SNACKBAR_TYPE, FETCH_LOADING_TEXT } from "constants/index";
 import ConfirmDialog from "components/shared/dialog/ConfirmDialog";
 import ReactDragDropUpload from "components/shared/ReactDragDropUpload";
 
@@ -65,7 +47,6 @@ const useStyles = makeStyles({
     flexDirection: "column",
     alignItems: "end",
     gap: 30,
-    // justifyContent: "end",
   },
   dragDrop: {
     marginTop: 30,
@@ -90,10 +71,8 @@ const WorkSpaces = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const [
-    deleteWorkSpace,
-    { data: deleteQueryData, loading: deleteWorkSpaceIsLoading },
-  ] = useMutationWithOnError(DELETE_WORKSPACES);
+  const [deleteWorkSpace, { data: deleteQueryData, loading: deleteWorkSpaceIsLoading }] =
+    useMutationWithOnError(DELETE_WORKSPACES);
 
   useEffect(() => {
     if (deleteQueryData?.deleteWorkSpace) {
@@ -104,12 +83,9 @@ const WorkSpaces = () => {
         })
       );
     }
-  }, [deleteQueryData]);
+  }, [deleteQueryData, dispatch]);
 
-  const workSpaceData = useMemo(
-    () => workSpaceQueryData?.getWorkSpaces || [],
-    [workSpaceQueryData]
-  );
+  const workSpaceData = useMemo(() => workSpaceQueryData?.getWorkSpaces || [], [workSpaceQueryData]);
 
   const deleteWorkspaceHandler = async (id) => {
     await deleteWorkSpace({
@@ -118,8 +94,7 @@ const WorkSpaces = () => {
     refetch();
   };
 
-  const [uploadFiles, { data: uploadQueryData, loading: uploadLoading }] =
-    useMutationWithOnError(UPLOAD_FILES);
+  const [uploadFiles, { data: uploadQueryData, loading: uploadLoading }] = useMutationWithOnError(UPLOAD_FILES);
 
   useEffect(() => {
     if (deleteWorkSpaceIsLoading || workSpaceIsLoading) {
@@ -149,17 +124,14 @@ const WorkSpaces = () => {
         WorkSpace Page
       </Typography>
       <Grid container>
-        <Grid md={7} className={classes.workSpaceContainer}>
+        <Grid item md={7} className={classes.workSpaceContainer}>
           <Typography variant="h5" className={classes.typoGraphy}>
             WorkSpace list
           </Typography>
           {workSpaceData.map(({ name, subDomain, id }) => (
             <div className={classes.workSpaceRow} key={id}>
               {console.log(WORKSPACES_ROUTE, id)}
-              <Link
-                to={`${WORKSPACES_ROUTE}/${id}`}
-                className={classes.workSpace}
-              >
+              <Link to={`${WORKSPACES_ROUTE}/${id}`} className={classes.workSpace}>
                 <span>Name: {name}</span>
                 <span>Unique Slug: {subDomain}</span>
                 <Divider />
@@ -168,24 +140,16 @@ const WorkSpaces = () => {
                 <Link to={`${WORKSPACES_ROUTE}/edit/${id}`}>
                   <EditIcon />
                 </Link>
-                <span
-                  className={classes.deleteIcon}
-                  onClick={() => setOpenConfirmDialog(id)}
-                >
+                <span className={classes.deleteIcon} onClick={() => setOpenConfirmDialog(id)}>
                   <DeleteIcon />
                 </span>
               </div>
             </div>
           ))}
         </Grid>
-        <Grid md={5} className={classes.createWorkSpaceBtn}>
+        <Grid md={5} item className={classes.createWorkSpaceBtn}>
           <Grid>
-            <Button
-              component={Link}
-              color="primary"
-              variant="contained"
-              to={`${WORKSPACES_ROUTE}/create`}
-            >
+            <Button component={Link} color="primary" variant="contained" to={`${WORKSPACES_ROUTE}/create`}>
               Create workspace
             </Button>
           </Grid>
