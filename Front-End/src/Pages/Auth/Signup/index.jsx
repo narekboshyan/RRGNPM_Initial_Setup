@@ -3,20 +3,12 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Grid, Typography } from "@material-ui/core";
 import PasswordField from "components/shared/Fields/PasswordFields";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useMutationWithOnError } from "hooks/apollo";
 import { SIGN_UP } from "graphql/mutations/auth";
 import { addLoadingData, addSnackbar, removeLoadingData } from "redux/slices/shared";
 import { useDispatch } from "react-redux";
-import {
-  FETCH_LOADING_TEXT,
-  DARK_BLUE_COLOR,
-  LIGHT_BLUE_COLOR,
-  WHITE_COLOR,
-  SNACKBAR_TYPE,
-  SIGN_IN_ROUTE,
-  SNACKBAR_MESSAGES,
-} from "constants/index";
+import { FETCH_LOADING_TEXT, DARK_BLUE_COLOR, SNACKBAR_TYPE, SIGN_IN_ROUTE, SNACKBAR_MESSAGES } from "constants/index";
 
 const useStyles = makeStyles(() => ({
   containerRoot: {
@@ -85,11 +77,27 @@ const SignUp = () => {
     lastName: "",
   });
   const { email, password, firstName, lastName } = formData;
+
+  const [searchParams] = useSearchParams();
+  const invitedUserEmail = searchParams.get("email");
+  const invitationCode = searchParams.get("invitationCode");
+
+  console.log(invitedUserEmail, invitationCode, "invitedUserEmail, invitationCode");
+
   const navigate = useNavigate();
   const classes = useStyles();
   const dispatch = useDispatch();
 
   const [signupUser, { data: signUpData, loading: signUpLoading }] = useMutationWithOnError(SIGN_UP);
+
+  useEffect(() => {
+    if (invitedUserEmail) {
+      setFormData((prevState) => ({
+        ...prevState,
+        email: invitedUserEmail,
+      }));
+    }
+  }, [invitedUserEmail]);
 
   useEffect(() => {
     if (signUpLoading) {
@@ -134,7 +142,7 @@ const SignUp = () => {
         <div className={classes.topPartRoot}>
           <div className={classes.checkAccountText}>Already have an account?</div>
           <Link to={SIGN_IN_ROUTE} className={classes.link}>
-            <Button textColor={LIGHT_BLUE_COLOR} bgColor={WHITE_COLOR}>
+            <Button variant="contained" color="primary">
               SIGN IN
             </Button>
           </Link>
@@ -186,6 +194,7 @@ const SignUp = () => {
                   value={email}
                   onChange={inputChangeHandler}
                   fullWidth
+                  disable={true}
                   label="Email"
                   id="email"
                   autoComplete="email"
@@ -205,7 +214,7 @@ const SignUp = () => {
               </Grid>
 
               <Grid item xs={12}>
-                <Button className={classes.submit} variant="contained" color="primary" fullWidth>
+                <Button className={classes.submit} variant="contained" color="primary" fullWidth type="submit">
                   Sign Up
                 </Button>
               </Grid>

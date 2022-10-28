@@ -123,7 +123,7 @@ async function startServer() {
 startServer();
 
 app.listen({ port }, async () =>
-  console.log(`🚀 Server ready at http://localhost:${port}/graphQL`)
+  console.log(`🚀 Server ready at http://localhost:${port}/graphql`)
 );
 
 // FIle table

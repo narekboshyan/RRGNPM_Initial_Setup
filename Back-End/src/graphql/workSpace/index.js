@@ -28,11 +28,17 @@ export const createEditWorkspace = async (
         },
       });
     } else {
-      await prisma.workspace.create({
+      const createdWorkspace = await prisma.workspace.create({
         data: {
-          userId: user.id,
           name,
           subDomain,
+        },
+      });
+
+      const createdWorkspaceWithUser = await prisma.userOnWorkSpace.create({
+        data: {
+          userId: user.id,
+          workspaceId: createdWorkspace.id,
         },
       });
     }

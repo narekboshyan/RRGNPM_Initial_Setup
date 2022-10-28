@@ -1,9 +1,9 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import SnackbarItem from './SnackbarItem';
+import React from "react";
+import { useSelector } from "react-redux";
+import SnackbarItem from "./SnackbarItem";
 
 const SharedSnackbar = () => {
-  const snackBarList = useSelector(state => state.common.data);
+  const snackBarList = useSelector((state) => state.common.data);
 
   return (
     <>
