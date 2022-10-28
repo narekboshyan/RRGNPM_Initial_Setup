@@ -30,7 +30,7 @@ export const sendEmail = (
       subject: "Invite user to workspace Application",
       text: "TEXT",
       html: `
-          <div>Hi,${sentInvitedUserFullName} has invited you to ${workspaceName} workspace. Please <a href="http://localhost:3000/signup?invitationCode=${invitationCode}&email=${to}">click this link to go and register</a> 
+          <div>Hi,${sentInvitedUserFullName} has invited you to ${workspaceName} workspace. Please  <a href="http://localhost:3000/signup?invitationCode=${invitationCode}&email=${to}">click this link to go and register</a> 
           </div>
         `,
     };
