@@ -1,9 +1,11 @@
 import PrivateRoute from "components/PrivateRoute";
+import { PROFILE_ROUTE } from "constants";
 import { SIGN_IN_ROUTE, SIGN_UP_ROUTE, WORKSPACES_ROUTE } from "constants";
 import Login from "Pages/Auth/Signin";
 import Signup from "Pages/Auth/Signup";
 import Home from "Pages/Home";
 import NotFound from "Pages/NotFound";
+import Profile from "Pages/Profile";
 import WorkSpaces from "Pages/WorkSpaces";
 import CreateEditWorkSpace from "Pages/WorkSpaces/CreateEditWorkSpace";
 import ViewWorkSpaces from "Pages/WorkSpaces/ViewWorkSpaces";
@@ -20,6 +22,14 @@ const Routes = () => {
       element: (
         <PrivateRoute>
           <WorkSpaces />
+        </PrivateRoute>
+      ),
+    },
+    {
+      path: PROFILE_ROUTE,
+      element: (
+        <PrivateRoute>
+          <Profile />
         </PrivateRoute>
       ),
     },

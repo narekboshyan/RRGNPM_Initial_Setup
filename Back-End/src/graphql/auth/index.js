@@ -9,10 +9,50 @@ export const getMe = async (_parent, _args, context) => {
 
 export const signup = async (
   _parent,
-  { data: { email, password, firstName, lastName } },
+  {
+    data: {
+      email,
+      password,
+      firstName,
+      lastName,
+      invitationCode,
+      invitedUserEmail,
+    },
+  },
   context
 ) => {
   const { prisma } = context;
+  const hashedPassword = await bcrypt.hash(password, 12);
+
+  if (invitationCode && invitedUserEmail) {
+    const invitedUser = await prisma.user.findUnique({
+      where: {
+        invitationCode: +invitationCode,
+      },
+    });
+
+    console.log(invitedUser, "invitedUser");
+
+    if (!invitedUser) {
+      throw new Error("Entered credentials are not valid");
+    }
+
+    const updatedInvitedUser = await prisma.user.update({
+      where: {
+        id: invitedUser.id,
+      },
+      data: {
+        firstName,
+        lastName,
+        password: hashedPassword,
+        invitationCode: null,
+      },
+    });
+
+    console.log(updatedInvitedUser);
+
+    return true;
+  }
 
   try {
     const emailAlreadyExists = await prisma.user.findUnique({
@@ -24,8 +64,6 @@ export const signup = async (
     if (emailAlreadyExists) {
       throw new Error("Email already exists");
     }
-
-    const hashedPassword = await bcrypt.hash(password, 12);
 
     await prisma.user.create({
       data: {

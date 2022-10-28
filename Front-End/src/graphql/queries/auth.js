@@ -10,3 +10,17 @@ export const GET_ME = gql`
     }
   }
 `;
+
+export const GET_MY_PROFILE_DATA = gql`
+  query getProfileData {
+    getProfileData {
+      id
+      firstName
+      lastName
+      email
+      profilePicture {
+        name
+      }
+    }
+  }
+`;

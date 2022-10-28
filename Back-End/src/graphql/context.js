@@ -67,6 +67,9 @@ export const context = async ({ req }) => {
       where: {
         id: userId,
       },
+      include: {
+        profilePicture: true,
+      },
     });
 
     if (!user) {

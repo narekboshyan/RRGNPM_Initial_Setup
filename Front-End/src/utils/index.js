@@ -50,3 +50,5 @@ export const channelReducer = (state, { type, payload }) => {
       return state;
   }
 };
+
+export const matchEmail = new RegExp("[a-z0-9]+@[a-z]+.[a-z]{2,3}");

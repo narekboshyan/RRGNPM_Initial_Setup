@@ -10,9 +10,17 @@ import { ERROR_CODES, ERROR_MESSAGES } from "./constants/errors.js";
 import { graphqlHTTP } from "express-graphql";
 import "./env.js";
 import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
+import path, { resolve, parse, join } from "path";
 
 const app = express();
 app.use(express.json());
+
+const __dirname = resolve();
+
+app.use(
+  "/profile-picture",
+  express.static(path.join(__dirname, "/src/uploads"))
+);
 
 // ! THis is a way of doing for multiple urls
 const allowed = [

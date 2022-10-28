@@ -7,7 +7,7 @@ import React, { useEffect, useMemo, useReducer, useState } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { v4 } from "uuid";
-import { channelReducer, CHANNEL_TYPE } from "utils";
+import { channelReducer, CHANNEL_TYPE, matchEmail } from "utils";
 import { CREATE_EDIT_CHANNELS } from "graphql/mutations/channels";
 import { addLoadingData, addSnackbar, removeLoadingData } from "redux/slices/shared";
 import { FETCH_LOADING_TEXT } from "constants";
@@ -38,6 +38,10 @@ const useStyles = makeStyles({
   },
   createEditWorkspaceContainer: {
     padding: 5,
+  },
+  inviteUserContainer: {
+    display: "flex",
+    alignItems: "end",
   },
 });
 
@@ -154,6 +158,15 @@ const ViewWorkSpaces = () => {
 
   const inviteUserSubmitHandler = async (e) => {
     e.preventDefault();
+    if (!matchEmail.test(userEmail)) {
+      dispatch(
+        addSnackbar({
+          type: SNACKBAR_TYPE.error,
+          message: "Invalid email address",
+        })
+      );
+      return;
+    }
     await inviteUser({
       variables: {
         invitedUserEmail: userEmail,
@@ -174,12 +187,35 @@ const ViewWorkSpaces = () => {
         Back
       </Button>
       <Grid container spacing={2} className={classes.container}>
-        <Grid item md={4}>
-          <Typography variant="h4">Workspace Details</Typography>
-          <Typography variant="h5">Name: {workSpaceData.name}</Typography>
-          <Typography variant="h5">SubDomain: {workSpaceData.subDomain}</Typography>
+        <Grid item md={6}>
+          <Grid container spacing={4}>
+            <Grid item md={12}>
+              <Typography variant="h4">Workspace Details</Typography>
+              <Typography variant="h5">Name: {workSpaceData.name}</Typography>
+              <Typography variant="h5">SubDomain: {workSpaceData.subDomain}</Typography>
+              <Divider />
+            </Grid>
+            <Grid item md={12}>
+              <Typography variant="h4" className={classes.typoGraphy}>
+                Invite User
+              </Typography>
+              <form onSubmit={inviteUserSubmitHandler} className={classes.inviteUserContainer}>
+                <TextField
+                  required
+                  formControlClassName={classes.field}
+                  placeholder="Enter user email"
+                  value={userEmail}
+                  onChange={(e) => setUserEmail(e.target.value)}
+                  label="Fill user email"
+                />
+                <Button variant="contained" color="primary" type="submit" className={classes.inviteUserBtn}>
+                  Invite
+                </Button>
+              </form>
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item md={4}>
+        <Grid item md={6}>
           <form onSubmit={channelSubmitHandler} className={classes.form}>
             {channelsFormData.map(({ name, id }) => (
               <div className={classes.formGroup} key={id}>
@@ -225,25 +261,6 @@ const ViewWorkSpaces = () => {
             </Button>
             <Button type="submit" className={classes.btn} color="primary" variant="contained">
               Submit
-            </Button>
-          </form>
-        </Grid>
-        <Grid item md={4}>
-          <Divider />
-          <Typography variant="h4" className={classes.typoGraphy}>
-            Invite User
-          </Typography>
-          <form onSubmit={inviteUserSubmitHandler}>
-            <TextField
-              required
-              formControlClassName={classes.field}
-              placeholder="Enter user email"
-              value={userEmail}
-              onChange={(e) => setUserEmail(e.target.value)}
-              label="Fill user email"
-            />
-            <Button variant="contained" color="primary" type="submit" className={classes.inviteUserBtn}>
-              Invite user
             </Button>
           </form>
         </Grid>

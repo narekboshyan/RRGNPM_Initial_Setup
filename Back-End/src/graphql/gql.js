@@ -15,6 +15,8 @@ input SignupData{
   password: String!
   firstName: String!
   lastName: String!
+  invitationCode: String
+  invitedUserEmail: String
 }
 
 input WorkspaceData{
@@ -38,7 +40,12 @@ export const types = `
   type User{
     id: Int!
     ${userTypes}
+    profilePicture:File
     token : String!
+  }
+
+  type File{
+    name:String
   }
 
   type WorkSpace{

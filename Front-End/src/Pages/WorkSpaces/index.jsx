@@ -6,12 +6,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { DELETE_WORKSPACES, UPLOAD_FILES } from "graphql/mutations";
+import { DELETE_WORKSPACES } from "graphql/mutations";
 import { useDispatch } from "react-redux";
 import { addLoadingData, addSnackbar, removeLoadingData } from "redux/slices/shared";
-import { SNACKBAR_TYPE, FETCH_LOADING_TEXT } from "constants/index";
+import { SNACKBAR_TYPE, FETCH_LOADING_TEXT, PROFILE_ROUTE } from "constants/index";
 import ConfirmDialog from "components/shared/dialog/ConfirmDialog";
-import ReactDragDropUpload from "components/shared/ReactDragDropUpload";
 
 const useStyles = makeStyles({
   workSpaceContainer: {
@@ -98,8 +97,6 @@ const WorkSpaces = () => {
     refetch();
   };
 
-  const [uploadFiles, { data: uploadQueryData, loading: uploadLoading }] = useMutationWithOnError(UPLOAD_FILES);
-
   useEffect(() => {
     if (deleteWorkSpaceIsLoading || workSpaceIsLoading) {
       dispatch(
@@ -113,14 +110,6 @@ const WorkSpaces = () => {
       dispatch(removeLoadingData("deleteWorkSpaceIsLoading"));
     }
   }, [deleteWorkSpaceIsLoading, dispatch, workSpaceIsLoading]);
-
-  const fileChangeHandler = async (files) => {
-    await uploadFiles({
-      variables: {
-        files,
-      },
-    });
-  };
 
   return (
     <>
@@ -155,17 +144,15 @@ const WorkSpaces = () => {
           <Grid>
             <Button component={Link} color="primary" variant="contained" to={`${WORKSPACES_ROUTE}/create`}>
               Create workspace
+            </Button>{" "}
+            <Button component={Link} color="primary" variant="contained" to={PROFILE_ROUTE}>
+              Go To My Profile Page
             </Button>
           </Grid>
           <Grid className={classes.dragDrop}>
             <Typography variant="h4" className={classes.typoGraphy}>
               Upload files{" "}
             </Typography>
-            <ReactDragDropUpload
-              onFileChange={fileChangeHandler}
-              loading={uploadLoading}
-              response={!!uploadQueryData}
-            />
           </Grid>
         </Grid>
       </Grid>

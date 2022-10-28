@@ -9,6 +9,7 @@ import { SIGN_UP } from "graphql/mutations/auth";
 import { addLoadingData, addSnackbar, removeLoadingData } from "redux/slices/shared";
 import { useDispatch } from "react-redux";
 import { FETCH_LOADING_TEXT, DARK_BLUE_COLOR, SNACKBAR_TYPE, SIGN_IN_ROUTE, SNACKBAR_MESSAGES } from "constants/index";
+import { matchEmail } from "utils";
 
 const useStyles = makeStyles(() => ({
   containerRoot: {
@@ -131,8 +132,19 @@ const SignUp = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    if (!matchEmail.test(email)) {
+      dispatch(
+        addSnackbar({
+          type: SNACKBAR_TYPE.error,
+          message: "Invalid email address",
+        })
+      );
+      return;
+    }
     await signupUser({
-      variables: { data: formData },
+      variables: {
+        data: { ...formData, ...(invitedUserEmail && invitationCode ? { invitationCode, invitedUserEmail } : {}) },
+      },
     });
   };
 
@@ -194,7 +206,7 @@ const SignUp = () => {
                   value={email}
                   onChange={inputChangeHandler}
                   fullWidth
-                  disable={true}
+                  disabled={invitationCode && invitedUserEmail}
                   label="Email"
                   id="email"
                   autoComplete="email"

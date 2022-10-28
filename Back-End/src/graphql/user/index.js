@@ -1,5 +1,8 @@
 import { sendEmail } from "../../services/Email.js";
 import { generateRandomNumber } from "../../utils/helpers.js";
+import bcrypt from "bcryptjs";
+import { promises as fs } from "fs";
+import path, { resolve } from "path";
 
 export const inviteUser = async (
   _parent,
@@ -58,4 +61,65 @@ export const inviteUser = async (
     console.log(error);
     return error;
   }
+};
+
+export const updateProfileData = async (
+  _parent,
+  { data: { email, password, firstName, lastName } },
+  context
+) => {
+  const { prisma, user } = context;
+  const hashedPassword = await bcrypt.hash(password, 12);
+
+  console.log(email, user);
+
+  try {
+    if (email !== user.email) {
+      const emailAlreadyExists = await prisma.user.findUnique({
+        where: {
+          email,
+        },
+      });
+
+      if (emailAlreadyExists) {
+        throw new Error("Email already exists");
+      }
+    }
+
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        email,
+        firstName,
+        lastName,
+        password: hashedPassword,
+      },
+    });
+
+    return true;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+export const getProfileData = async (_parent, args, context) => {
+  const { user, prisma } = context;
+
+  const userData = await prisma.user.findUnique({
+    where: {
+      id: user.id,
+    },
+    include: {
+      profilePicture: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  return userData;
 };

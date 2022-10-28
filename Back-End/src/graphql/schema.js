@@ -9,14 +9,15 @@ import {
   deleteWorkSpace,
 } from "./workSpace/index.js";
 import { createEditChannels, getChannels } from "./channels/index.js";
-import { uploadFiles } from "./uploadFiles/index.js";
-import { inviteUser } from "./user/index.js";
+import { uploadProfilePicture } from "./uploadProfilePicture/index.js";
+import { inviteUser, updateProfileData, getProfileData } from "./user/index.js";
 
 const typeDefs = gql`
   ${types}
   ${inputs}
   type Query {
     getMe: User!
+    getProfileData: User!
     getWorkSpaces(id: Int): [WorkSpace!]!
     getChannels(workspaceId: Int!): [TypeChannel]
   }
@@ -24,10 +25,11 @@ const typeDefs = gql`
   type Mutation {
     signin(data: SigninData!): User!
     signup(data: SignupData!): Boolean
+    updateProfileData(data: SignupData!): Boolean
     createEditWorkspace(data: WorkspaceData!): Boolean
     deleteWorkSpace(id: Int!): Boolean
     createEditChannels(data: ChannelsData): Boolean
-    uploadFiles(files: Upload!): Boolean
+    uploadProfilePicture(file: Upload!): Boolean
     inviteUser(invitedUserEmail: String!, workspaceId: Int!): Boolean
   }
 
@@ -38,14 +40,15 @@ const typeDefs = gql`
 `;
 
 const resolvers = {
-  Query: { getWorkSpaces, getMe, getChannels },
+  Query: { getWorkSpaces, getMe, getChannels, getProfileData },
   Mutation: {
     signin,
     signup,
+    updateProfileData,
     createEditWorkspace,
     deleteWorkSpace,
     createEditChannels,
-    uploadFiles,
+    uploadProfilePicture,
     inviteUser,
   },
   DateTime: DateTimeResolver,

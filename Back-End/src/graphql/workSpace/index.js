@@ -56,7 +56,7 @@ export const getWorkSpaces = async (_parent, { id }, context) => {
     const workSpaces = await prisma.workspace.findMany({
       where: {
         users: {
-          every: {
+          some: {
             userId: user.id,
           },
         },
