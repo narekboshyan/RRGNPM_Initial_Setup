@@ -1,4 +1,4 @@
-DATABASE_URL="postgresql://postgres:root@localhost:5432/mytask"
+DATABASE_URL="postgresql://postgres:root@localhost:5432/workspacedb"
 APP_FRONT_END_URL="http://localhost:3000"
 NODE_ENV = "development"
 APP_SECRET="y#Cjc,9J%LY0jxWccS,8<#oqPppzXijy}:s9kTLGj#JG{'t`7Z#-F9K8|xl;y3"
