@@ -5,7 +5,7 @@ import { Button, Grid, Typography } from "@material-ui/core";
 import PasswordField from "components/shared/Fields/PasswordFields";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useMutationWithOnError } from "hooks/apollo";
-import { SIGN_UP } from "graphql/mutations/auth";
+import { SIGN_UP } from "graphql/mutations";
 import { addLoadingData, addSnackbar, removeLoadingData } from "redux/slices/shared";
 import { useDispatch } from "react-redux";
 import {
@@ -148,6 +148,18 @@ const SignUp = () => {
 
       return;
     }
+
+    if (!firstName || !lastName || !password) {
+      dispatch(
+        addSnackbar({
+          type: SNACKBAR_TYPE.error,
+          message: "Invalid user data",
+        })
+      );
+
+      return;
+    }
+
     await signupUser({
       variables: {
         data: {

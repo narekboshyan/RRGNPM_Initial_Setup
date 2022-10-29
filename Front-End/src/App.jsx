@@ -1,6 +1,6 @@
 import CircularLoading from "components/shared/Loading";
 import SharedSnackbar from "components/shared/Snackbar/SnackbarList";
-import { GET_ME } from "graphql/queries/auth";
+import { GET_ME } from "graphql/queries";
 import { useLazyQueryWithOnError } from "hooks/apollo";
 import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";

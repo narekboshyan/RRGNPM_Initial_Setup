@@ -5,14 +5,14 @@ import TextField from "components/shared/Fields/TextField";
 import { SNACKBAR_TYPE } from "constants";
 import { FETCH_LOADING_TEXT } from "constants";
 import { UPLOAD_FILE } from "graphql/mutations";
-import { DELETE_ACCOUNT, UPDATE_PROFILE_DATA } from "graphql/mutations/user";
-import { GET_MY_PROFILE_DATA } from "graphql/queries/auth";
+import { DELETE_ACCOUNT, UPDATE_PROFILE_DATA } from "graphql/mutations";
+import { GET_MY_PROFILE_DATA } from "graphql/queries";
 import { useMutationWithOnError, useQueryWithOnError } from "hooks/apollo";
 import { useDispatch } from "react-redux";
 import { addLoadingData, addSnackbar, removeLoadingData } from "redux/slices/shared";
 import { useNavigate } from "react-router-dom";
 import ConfirmDialog from "components/shared/dialog/ConfirmDialog";
-import { deleteItemFromLocalStorage } from "utils";
+import { deleteItemFromLocalStorage, matchEmail } from "utils";
 import { SIGN_IN_ROUTE } from "constants";
 
 const useStyles = makeStyles({
@@ -78,6 +78,28 @@ const Profile = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    if (matchEmail(email)) {
+      dispatch(
+        addSnackbar({
+          type: SNACKBAR_TYPE.error,
+          message: "Invalid email address",
+        })
+      );
+
+      return;
+    }
+
+    if (!firstName || !lastName) {
+      dispatch(
+        addSnackbar({
+          type: SNACKBAR_TYPE.error,
+          message: "Invalid user data",
+        })
+      );
+
+      return;
+    }
     await updateProfileData({
       variables: { data: formData },
     });
@@ -108,7 +130,6 @@ const Profile = () => {
           file,
         },
       });
-      setFile("");
       refetch();
     }
   };
@@ -234,7 +255,7 @@ const Profile = () => {
           {profilePhotoName && (
             <img
               alt={profilePhotoName}
-              src={`http://localhost:4000/profile-picture/${profilePhotoName}`}
+              src={`http://localhost:4000/images/${profilePhotoName}`}
               className={classes.avatar}
             />
           )}

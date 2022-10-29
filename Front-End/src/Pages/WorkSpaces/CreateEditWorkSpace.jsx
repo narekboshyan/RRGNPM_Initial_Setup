@@ -4,7 +4,7 @@ import { FETCH_LOADING_TEXT } from "constants";
 import { SNACKBAR_TYPE } from "constants";
 import { WORKSPACES_ROUTE } from "constants";
 import { CREATE_WORKSPACES } from "graphql/mutations";
-import { GET_WORKSPACES } from "graphql/queries/workSpaces";
+import { GET_WORKSPACES } from "graphql/queries";
 import { useMutationWithOnError, useQueryWithOnError } from "hooks/apollo";
 import React, { useMemo, useState } from "react";
 import { useEffect } from "react";

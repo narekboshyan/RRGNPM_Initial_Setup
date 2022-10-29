@@ -1,6 +1,6 @@
 import { Divider, Grid, makeStyles, Typography } from "@material-ui/core";
 import { WORKSPACES_ROUTE } from "constants";
-import { GET_WORKSPACES } from "graphql/queries/workSpaces";
+import { GET_WORKSPACES } from "graphql/queries";
 import { useMutationWithOnError, useQueryWithOnError } from "hooks/apollo";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";

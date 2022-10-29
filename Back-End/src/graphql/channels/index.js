@@ -3,7 +3,7 @@ export const createEditChannels = async (
   { data: { workspaceId, channelsData } },
   context
 ) => {
-  const { prisma, user } = context;
+  const { prisma } = context;
 
   await prisma.channel.deleteMany({
     where: {

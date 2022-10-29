@@ -11,3 +11,9 @@ export const DELETE_ACCOUNT = gql`
     deleteAccount
   }
 `;
+
+export const INVITE_USER = gql`
+  mutation inviteUser($invitedUserEmail: String!, $workspaceId: Int!) {
+    inviteUser(invitedUserEmail: $invitedUserEmail, workspaceId: $workspaceId)
+  }
+`;

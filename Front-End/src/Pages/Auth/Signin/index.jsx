@@ -6,7 +6,7 @@ import PasswordField from "components/shared/Fields/PasswordFields";
 import { Link, useNavigate } from "react-router-dom";
 import { addUserData } from "redux/slices/user";
 import { DARK_BLUE_COLOR, FETCH_LOADING_TEXT, WORKSPACES_ROUTE } from "constants/index";
-import { SIGN_IN } from "graphql/mutations/auth";
+import { SIGN_IN } from "graphql/mutations";
 import { useDispatch } from "react-redux";
 import { addLoadingData, removeLoadingData } from "redux/slices/shared";
 import { useMutationWithOnError } from "hooks/apollo";
@@ -121,75 +121,73 @@ const SignIn = () => {
   };
 
   return (
-    <>
-      <Grid sx={{ height: "100vh", overflow: "hidden" }}>
-        <div className={classes.topPartRoot}>
-          <div className={classes.checkAccountText}>Don&apos;t have an account?</div>
-          <Link to="/signup" className={classes.link}>
-            <Button variant="contained" color="primary">
-              SIGN UP
-            </Button>
-          </Link>
-        </div>
-        <Grid
-          container
-          display="flex"
-          sx={{
-            height: "100%",
-            width: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
-          }}
-        >
-          <form onSubmit={submitHandler} className={classes.containerRoot}>
-            <Grid container spacing={2} justifycontent="center">
-              <Typography variant="h4" className={classes.center}>
-                Sign in
-              </Typography>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  formControlClassName={classes.field}
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={inputChangeHandler}
-                  fullWidth
-                  label="Email"
-                  id="email"
-                  autoComplete="email"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <PasswordField
-                  required
-                  placeholder="Enter your password"
-                  formControlClassName={classes.field}
-                  value={password}
-                  onChange={inputChangeHandler}
-                  fullWidth
-                  id="password"
-                  label="Password"
-                  autoComplete="current-password"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                  type="submit"
-                  fullWidth
-                >
-                  Sign In
-                </Button>
-              </Grid>
+    <Grid sx={{ height: "100vh", overflow: "hidden" }}>
+      <div className={classes.topPartRoot}>
+        <div className={classes.checkAccountText}>Don&apos;t have an account?</div>
+        <Link to="/signup" className={classes.link}>
+          <Button variant="contained" color="primary">
+            SIGN UP
+          </Button>
+        </Link>
+      </div>
+      <Grid
+        container
+        display="flex"
+        sx={{
+          height: "100%",
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
+        <form onSubmit={submitHandler} className={classes.containerRoot}>
+          <Grid container spacing={2} justifycontent="center">
+            <Typography variant="h4" className={classes.center}>
+              Sign in
+            </Typography>
+            <Grid item xs={12}>
+              <TextField
+                required
+                formControlClassName={classes.field}
+                placeholder="Enter your email"
+                value={email}
+                onChange={inputChangeHandler}
+                fullWidth
+                label="Email"
+                id="email"
+                autoComplete="email"
+                autoFocus
+              />
             </Grid>
-          </form>
-        </Grid>
+            <Grid item xs={12}>
+              <PasswordField
+                required
+                placeholder="Enter your password"
+                formControlClassName={classes.field}
+                value={password}
+                onChange={inputChangeHandler}
+                fullWidth
+                id="password"
+                label="Password"
+                autoComplete="current-password"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                type="submit"
+                fullWidth
+              >
+                Sign In
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
       </Grid>
-    </>
+    </Grid>
   );
 };
 

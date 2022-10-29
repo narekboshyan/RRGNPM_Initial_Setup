@@ -1,0 +1,10 @@
+DATABASE_URL="postgresql://postgres:root@localhost:5432/mytask"
+APP_FRONT_END_URL="http://localhost:3000"
+NODE_ENV = "development"
+APP_SECRET="y#Cjc,9J%LY0jxWccS,8<#oqPppzXijy}:s9kTLGj#JG{'t`7Z#-F9K8|xl;y3"
+APP_BACK_END_URL="http://localhost:4000"
+PORT="4000"
+
+NODEMAILER_USER="narek.boshyan.dev@gmail.com"
+NODEMAILER_PASSWORD="edcxuqjaygivfzeg"
+NODEMAILER_FROM="narek.boshyan.dev@gmail.com"

@@ -1,14 +1,14 @@
 import { Button, Divider, Grid, makeStyles, Typography } from "@material-ui/core";
 import TextField from "components/shared/Fields/TextField";
 import { WORKSPACES_ROUTE } from "constants";
-import { GET_WORKSPACES } from "graphql/queries/workSpaces";
+import { GET_WORKSPACES } from "graphql/queries";
 import { useMutationWithOnError, useQueryWithOnError } from "hooks/apollo";
 import React, { useEffect, useMemo, useReducer, useState } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 } from "uuid";
 import { channelReducer, CHANNEL_TYPE, matchEmail } from "utils";
-import { CREATE_EDIT_CHANNELS } from "graphql/mutations/channels";
+import { CREATE_EDIT_CHANNELS } from "graphql/mutations";
 import { addLoadingData, addSnackbar, removeLoadingData } from "redux/slices/shared";
 import { FETCH_LOADING_TEXT } from "constants";
 import { useDispatch } from "react-redux";
@@ -183,6 +183,8 @@ const ViewWorkSpaces = () => {
         workspaceId: +id,
       },
     });
+
+    setUserEmail("");
   };
 
   return (

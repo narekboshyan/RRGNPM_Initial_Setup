@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 export function getTokenPayload(token) {
   try {
@@ -9,13 +9,13 @@ export function getTokenPayload(token) {
 }
 
 export function getUserId(req, authToken) {
-  let token = '';
+  let token = "";
   if (req && req.headers && req.headers.authorization) {
     const authHeader = req.headers && req.headers.authorization;
     if (authHeader) {
-      token = authHeader.replace('Bearer ', '');
+      token = authHeader.replace("Bearer ", "");
       if (!token) {
-        throw new Error('No token found');
+        throw new Error("No token found");
       }
     }
   } else if (authToken) {

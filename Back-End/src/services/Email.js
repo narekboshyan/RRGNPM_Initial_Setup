@@ -1,11 +1,13 @@
+/* eslint-disable no-console */
 import nodemailer from "nodemailer";
+import "../env.js";
 
 const service = "google";
 const auth = {
-  user: "narek.boshyan.dev@gmail.com",
-  pass: "edcxuqjaygivfzeg",
+  user: process.env.NODEMAILER_USER,
+  pass: process.env.NODEMAILER_PASSWORD,
 };
-const from = "narek.boshyan@gmail.com";
+const from = process.env.NODEMAILER_FROM;
 
 export const sendEmail = (sentInvitedUserFullName, to, invitationCode, workspaceName) => {
   try {
@@ -22,7 +24,7 @@ export const sendEmail = (sentInvitedUserFullName, to, invitationCode, workspace
       subject: "Invite user to workspace Application",
       text: "TEXT",
       html: `
-          <div>Hi,${sentInvitedUserFullName} has invited you to ${workspaceName} workspace. Please  <a href="http://localhost:3000/signup?invitationCode=${invitationCode}&email=${to}">click this link to go and register</a> 
+          <div>Hi,${sentInvitedUserFullName} has invited you to ${workspaceName} workspace. Please  <a href="${process.env.APP_FRONT_END_URL}/signup?invitationCode=${invitationCode}&email=${to}">Click this link to go and register</a> 
           </div>
         `,
     };
