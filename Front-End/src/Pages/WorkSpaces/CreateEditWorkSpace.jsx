@@ -9,7 +9,7 @@ import { useMutationWithOnError, useQueryWithOnError } from "hooks/apollo";
 import React, { useMemo, useState } from "react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { addLoadingData, addSnackbar, removeLoadingData } from "redux/slices/shared";
 
 const useStyles = makeStyles({
@@ -39,15 +39,21 @@ const CreateEditWorkSpace = () => {
   const { name, subDomain } = workSpaceData;
   const { id } = useParams();
 
-  const { data: workSpaceQueryData, loading: workSpaceIsLoading } = useQueryWithOnError(GET_WORKSPACES, {
-    fetchPolicy: "no-cache",
-    variables: {
-      id: +id,
-    },
-    skip: !id,
-  });
+  const { data: workSpaceQueryData, loading: workSpaceIsLoading } = useQueryWithOnError(
+    GET_WORKSPACES,
+    {
+      fetchPolicy: "no-cache",
+      variables: {
+        id: +id,
+      },
+      skip: !id,
+    }
+  );
 
-  const workSpaceFetchedData = useMemo(() => workSpaceQueryData?.getWorkSpaces[0] || {}, [workSpaceQueryData]);
+  const workSpaceFetchedData = useMemo(
+    () => workSpaceQueryData?.getWorkSpaces[0] || {},
+    [workSpaceQueryData]
+  );
 
   useEffect(() => {
     if (workSpaceQueryData?.getWorkSpaces) {
@@ -84,6 +90,18 @@ const CreateEditWorkSpace = () => {
       );
       return;
     }
+
+    if (name === workSpaceFetchedData.name && subDomain === workSpaceFetchedData.subDomain) {
+      console.log("SHOULD TRIGGER THIS EVENT");
+      dispatch(
+        addSnackbar({
+          type: SNACKBAR_TYPE.error,
+          message: "You did not make any changes",
+        })
+      );
+      return;
+    }
+
     await createEditWorkspace({
       variables: {
         data: workSpaceData,
@@ -107,9 +125,6 @@ const CreateEditWorkSpace = () => {
 
   return (
     <Grid className={classes.createEditWorkspaceContainer}>
-      <Button component={Link} to={WORKSPACES_ROUTE} type="submit" color="primary" variant="contained">
-        Back
-      </Button>
       <div className={classes.formControl}>
         <form onSubmit={workSpaceSubmitHandler} className={classes.form}>
           <div className={classes.formGroup}>

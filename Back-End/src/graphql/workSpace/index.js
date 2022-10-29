@@ -1,9 +1,5 @@
 // Need to work on Permissions
-export const createEditWorkspace = async (
-  _parent,
-  { data: { name, subDomain, id } },
-  context
-) => {
+export const createEditWorkspace = async (_parent, { data: { name, subDomain, id } }, context) => {
   try {
     const { prisma, user } = context;
 
@@ -35,7 +31,7 @@ export const createEditWorkspace = async (
         },
       });
 
-      const createdWorkspaceWithUser = await prisma.userOnWorkSpace.create({
+      await prisma.userOnWorkSpace.create({
         data: {
           userId: user.id,
           workspaceId: createdWorkspace.id,
@@ -67,8 +63,6 @@ export const getWorkSpaces = async (_parent, { id }, context) => {
       },
     });
 
-    console.log(workSpaces, "workSpaces");
-
     return workSpaces;
   } catch (error) {
     console.log(error);
@@ -78,7 +72,7 @@ export const getWorkSpaces = async (_parent, { id }, context) => {
 
 // Need to work on Permissions
 export const deleteWorkSpace = async (_parent, { id }, context) => {
-  const { prisma, user } = context;
+  const { prisma } = context;
   await prisma.workspace.delete({
     where: {
       id,

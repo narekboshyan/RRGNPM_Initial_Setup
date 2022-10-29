@@ -1,18 +1,16 @@
-import fs, { createWriteStream, readFileSync } from "fs";
-import path, { resolve, parse, join } from "path";
+import { createWriteStream } from "fs";
+import path, { resolve } from "path";
 import { v4 as uuid } from "uuid";
 
 export const uploadProfilePicture = async (parent, { file }, context) => {
   const { user, prisma } = context;
   try {
     const { file: uploadedFile } = await file;
-    const __dirname = resolve();
+    const dirname = resolve();
     const filename = `${uuid()}_${uploadedFile.filename}`;
-    const pathname = path.join(__dirname, `/src/uploads/${filename}`);
+    const pathname = path.join(dirname, `/src/uploads/${filename}`);
     const stream = uploadedFile.createReadStream();
     stream.pipe(createWriteStream(pathname));
-
-    console.log(user);
 
     if (user.profilePicture) {
       await prisma.profilePicture.update({

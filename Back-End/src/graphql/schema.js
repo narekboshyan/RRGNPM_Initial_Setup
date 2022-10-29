@@ -10,7 +10,12 @@ import {
 } from "./workSpace/index.js";
 import { createEditChannels, getChannels } from "./channels/index.js";
 import { uploadProfilePicture } from "./uploadProfilePicture/index.js";
-import { inviteUser, updateProfileData, getProfileData } from "./user/index.js";
+import {
+  inviteUser,
+  updateProfileData,
+  getProfileData,
+  deleteAccount,
+} from "./user/index.js";
 
 const typeDefs = gql`
   ${types}
@@ -31,6 +36,7 @@ const typeDefs = gql`
     createEditChannels(data: ChannelsData): Boolean
     uploadProfilePicture(file: Upload!): Boolean
     inviteUser(invitedUserEmail: String!, workspaceId: Int!): Boolean
+    deleteAccount: Boolean!
   }
 
   scalar DateTime
@@ -50,6 +56,7 @@ const resolvers = {
     createEditChannels,
     uploadProfilePicture,
     inviteUser,
+    deleteAccount,
   },
   DateTime: DateTimeResolver,
 };

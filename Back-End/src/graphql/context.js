@@ -3,7 +3,6 @@ import { ERROR_MESSAGES } from "../constants/errors.js";
 import { getUserId } from "../utils/auth.js";
 import { InvalidDataError } from "../errors/InvalidDataError.js";
 import { operationNamesToPermissions } from "../constants/roles.js";
-import { PermissionDeniedError } from "../errors/PermissionDeniedError.js";
 
 const getUnAuthenticatedContext = async (operationName, userId) => {
   if (operationName === "getMe") {

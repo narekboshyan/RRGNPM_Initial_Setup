@@ -2,21 +2,13 @@ import nodemailer from "nodemailer";
 
 const service = "google";
 const auth = {
-  user: "narek.boshyan@gmail.com",
-  pass: "wcponxmxmwyjjrmf",
+  user: "narek.boshyan.dev@gmail.com",
+  pass: "edcxuqjaygivfzeg",
 };
 const from = "narek.boshyan@gmail.com";
 
-export const sendEmail = (
-  sentInvitedUserFullName,
-  to,
-  invitationCode,
-  workspaceName
-) => {
-  console.log("THIS IS CALLING SEND_EMAIL");
+export const sendEmail = (sentInvitedUserFullName, to, invitationCode, workspaceName) => {
   try {
-    console.log(auth, service, from);
-
     const transporter = nodemailer.createTransport({
       service,
       auth,
@@ -35,11 +27,11 @@ export const sendEmail = (
         `,
     };
 
-    transporter.sendMail(mailOptions, function (error, info) {
+    transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log(error);
       } else {
-        console.log("Email was sent successfully: " + info.response);
+        console.log(`Email was sent successfully:${info.response}`);
       }
     });
   } catch (error) {

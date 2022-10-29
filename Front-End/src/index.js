@@ -9,6 +9,7 @@ import { store } from "redux/store";
 import "./index.css";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
+import CircularLoading from "components/shared/Loading";
 
 const container = document.getElementById("root");
 const root = createRoot(container);
@@ -18,7 +19,7 @@ root.render(
     <Provider store={store}>
       <ApolloProvider client={client}>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <Suspense fallback={<span>FallBack Text</span>}>
+          <Suspense fallback={<CircularLoading />}>
             <Router>
               <App />
             </Router>

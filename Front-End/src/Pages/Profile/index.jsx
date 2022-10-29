@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Button, Grid, makeStyles, Typography } from "@material-ui/core";
 import PasswordField from "components/shared/Fields/PasswordFields";
 import TextField from "components/shared/Fields/TextField";
 import { SNACKBAR_TYPE } from "constants";
 import { FETCH_LOADING_TEXT } from "constants";
 import { UPLOAD_FILE } from "graphql/mutations";
-import { UPDATE_PROFILE_DATA } from "graphql/mutations/user";
+import { DELETE_ACCOUNT, UPDATE_PROFILE_DATA } from "graphql/mutations/user";
 import { GET_MY_PROFILE_DATA } from "graphql/queries/auth";
 import { useMutationWithOnError, useQueryWithOnError } from "hooks/apollo";
 import { useDispatch } from "react-redux";
 import { addLoadingData, addSnackbar, removeLoadingData } from "redux/slices/shared";
-import { WORKSPACES_ROUTE } from "constants";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import ConfirmDialog from "components/shared/dialog/ConfirmDialog";
+import { deleteItemFromLocalStorage } from "utils";
+import { SIGN_IN_ROUTE } from "constants";
 
 const useStyles = makeStyles({
   containerRoot: {
@@ -39,7 +41,9 @@ const Profile = () => {
     firstName: "",
     lastName: "",
   });
-  const [file, setFile] = useState({});
+  const [file, setFile] = useState("");
+  const navigate = useNavigate();
+  const [confirmDeleteAccount, setConfirmDeleteAccount] = useState(false);
   const { email, password, firstName, lastName } = formData;
   const [updateProfileData, { data: updatedQueryData, loading: signUpLoading }] =
     useMutationWithOnError(UPDATE_PROFILE_DATA);
@@ -84,16 +88,29 @@ const Profile = () => {
     setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
-  //   eslint-disable-next-line
-  const [uploadProfilePicture, { data: uploadQueryData, loading: uploadLoading }] = useMutationWithOnError(UPLOAD_FILE);
+  const [uploadProfilePicture, { data: uploadQueryData, loading: uploadLoading }] =
+    useMutationWithOnError(UPLOAD_FILE);
+
+  const [deleteAccount, { data: deleteAccountQueryData, loading: deleteAccountIsLoading }] =
+    useMutationWithOnError(DELETE_ACCOUNT);
+
+  useEffect(() => {
+    if (deleteAccountQueryData?.deleteAccount) {
+      deleteItemFromLocalStorage("token");
+      navigate(SIGN_IN_ROUTE);
+    }
+  }, [deleteAccountQueryData]);
 
   const fileUploadHandler = async () => {
-    await uploadProfilePicture({
-      variables: {
-        file,
-      },
-    });
-    refetch();
+    if (file) {
+      await uploadProfilePicture({
+        variables: {
+          file,
+        },
+      });
+      setFile("");
+      refetch();
+    }
   };
 
   useEffect(() => {
@@ -107,13 +124,13 @@ const Profile = () => {
     }
   }, [uploadQueryData]);
 
+  const profilePhotoName = useMemo(
+    () => myProfileQueryData?.getProfileData.profilePicture?.name || "",
+    [myProfileQueryData]
+  );
+
   useEffect(() => {
-    if (
-      profileDataIsLoading ||
-      signUpLoading ||
-      uploadLoading ||
-      (myProfileQueryData && !myProfileQueryData.getProfileData.profilePicture.name)
-    ) {
+    if (profileDataIsLoading || signUpLoading || uploadLoading || deleteAccountIsLoading) {
       dispatch(
         addLoadingData({
           key: "createEditIsLoading",
@@ -126,26 +143,20 @@ const Profile = () => {
     }
   }, [profileDataIsLoading, signUpLoading]);
 
+  const confirmDeleteAccountHandler = async () => {
+    await deleteAccount();
+    setConfirmDeleteAccount(false);
+  };
+
   return (
     <>
-      <Button
-        component={Link}
-        to={WORKSPACES_ROUTE}
-        color="primary"
-        variant="contained"
-        className={classes.createEditWorkspaceContainer}
-      >
-        Back
-      </Button>
       <Grid container spacing={3}>
         <Grid md={6} item>
-          {" "}
           <form onSubmit={submitHandler} className={classes.containerRoot}>
             <Grid container spacing={2} display="flex" justifycontent="center">
               <Typography variant="h4" className={classes.center}>
                 Profile Data
               </Typography>
-              <img src="assets/icons/logo-2.png" alt="" />
               <Grid item xs={12}>
                 <TextField
                   required
@@ -198,26 +209,51 @@ const Profile = () => {
               </Grid>
 
               <Grid item xs={12}>
-                <Button className={classes.submit} variant="contained" color="primary" fullWidth type="submit">
+                <Button
+                  className={classes.submit}
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  type="submit"
+                >
                   Save changes
                 </Button>
               </Grid>
             </Grid>
           </form>
+          <Button
+            type="button"
+            variant="contained"
+            color="secondary"
+            onClick={() => setConfirmDeleteAccount(true)}
+          >
+            Delete my account
+          </Button>
         </Grid>
         <Grid md={6} item className={classes.avatarContent}>
-          <img
-            alt={myProfileQueryData?.getProfileData.profilePicture.name}
-            src={`http://localhost:4000/profile-picture/${myProfileQueryData?.getProfileData.profilePicture.name}`}
-            className={classes.avatar}
-          />
-
+          {profilePhotoName && (
+            <img
+              alt={profilePhotoName}
+              src={`http://localhost:4000/profile-picture/${profilePhotoName}`}
+              className={classes.avatar}
+            />
+          )}
           <input type="file" accept="image/*" onChange={(e) => setFile(...e.target.files)} />
           <Button variant="contained" color="primary" onClick={fileUploadHandler}>
             Upload
           </Button>
         </Grid>
       </Grid>
+
+      <ConfirmDialog
+        open={confirmDeleteAccount}
+        title="Delete Account"
+        onClose={() => setConfirmDeleteAccount(false)}
+        onConfirm={confirmDeleteAccountHandler}
+        confirmMessage="Are you sure you want to delete your account ?"
+        cancelActionText="Cancel"
+        confirmActionText="Delete"
+      />
     </>
   );
 };

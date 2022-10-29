@@ -1,14 +1,8 @@
+import bcrypt from "bcryptjs";
 import { sendEmail } from "../../services/Email.js";
 import { generateRandomNumber } from "../../utils/helpers.js";
-import bcrypt from "bcryptjs";
-import { promises as fs } from "fs";
-import path, { resolve } from "path";
 
-export const inviteUser = async (
-  _parent,
-  { invitedUserEmail, workspaceId },
-  context
-) => {
+export const inviteUser = async (_parent, { invitedUserEmail, workspaceId }, context) => {
   try {
     const { prisma, user } = context;
     const invitationCode = generateRandomNumber(6);
@@ -34,7 +28,7 @@ export const inviteUser = async (
       },
     });
 
-    const setUserId = await prisma.userOnWorkSpace.update({
+    await prisma.userOnWorkSpace.update({
       where: {
         id: createdInvitedUser.id,
       },
@@ -70,8 +64,6 @@ export const updateProfileData = async (
 ) => {
   const { prisma, user } = context;
   const hashedPassword = await bcrypt.hash(password, 12);
-
-  console.log(email, user);
 
   try {
     if (email !== user.email) {
@@ -122,4 +114,39 @@ export const getProfileData = async (_parent, args, context) => {
   });
 
   return userData;
+};
+
+export const deleteAccount = async (_parent, args, context) => {
+  const { user, prisma } = context;
+
+  const deletedUser = await prisma.user.delete({
+    where: {
+      id: user.id,
+    },
+    include: {
+      workSpaces: {
+        select: {
+          workspace: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const workspaceIds = deletedUser.workSpaces?.map(({ workspace }) => workspace.id);
+
+  if (workspaceIds) {
+    await prisma.workspace.deleteMany({
+      where: {
+        id: {
+          in: workspaceIds,
+        },
+      },
+    });
+  }
+
+  return true;
 };

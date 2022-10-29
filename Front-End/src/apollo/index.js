@@ -6,14 +6,11 @@ import { getItemFromLocalStorage } from "utils";
 
 const getApolloClient = () => {
   const httpLink = createUploadLink({
-    // eslint-disable-next-line no-undef
     uri: `${process.env.REACT_APP_SERVER_BASE_URL}/graphql`,
   });
 
   const authLink = setContext((_, { headers }) => {
-    // get the authentication token from local storage if it exists
     const token = getItemFromLocalStorage("token");
-    // return the headers to the context so httpLink can read them
     return {
       headers: {
         ...headers,
@@ -24,12 +21,8 @@ const getApolloClient = () => {
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
       graphQLErrors.forEach(({ message, locations, path }) => {
-        // eslint-disable-next-line
-        console.log(
-          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-        );
+        console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
       });
-    // eslint-disable-next-line
     if (networkError) console.log(`[Network error]: ${networkError}`);
   });
 

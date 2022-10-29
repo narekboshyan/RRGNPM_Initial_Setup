@@ -1,57 +1,22 @@
 import express from "express";
-import cors from "cors";
 import { ApolloServer } from "apollo-server-express";
 import { ApolloError } from "apollo-server-errors";
-import { schema, typeDefs, resolvers } from "./graphql/schema.js";
+import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
+import path, { resolve } from "path";
+import { schema } from "./graphql/schema.js";
 import { context } from "./graphql/context.js";
 import "./utils/auth.js";
-import { SomethingWentWrongError } from "./errors/SomethingWentWrongError.js";
-import { ERROR_CODES, ERROR_MESSAGES } from "./constants/errors.js";
-import { graphqlHTTP } from "express-graphql";
+import { ERROR_CODES } from "./constants/errors.js";
 import "./env.js";
-import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
-import path, { resolve, parse, join } from "path";
 
 const app = express();
 app.use(express.json());
 
-const __dirname = resolve();
+const dirname = resolve();
 
-app.use(
-  "/profile-picture",
-  express.static(path.join(__dirname, "/src/uploads"))
-);
+app.use("/images", express.static(path.join(dirname, "/src/uploads")));
 
-// ! THis is a way of doing for multiple urls
-const allowed = [
-  "http://localhost:3000",
-  "http://localhost:4000",
-  "https://studio.apollographql.com",
-];
-
-// const options = (req, res) => {
-//   let tmp;
-//   let origin = req.header("Origin");
-//   if (allowed.includes(origin)) {
-//     tmp = {
-//       origin: true,
-//       optionSuccessStatus: 200,
-//     };
-//   } else {
-//     tmp = {
-//       origin: false,
-//     };
-//   }
-//   res(null, tmp);
-// };
-// app.use(cors(options));
-
-// ! This is one way of doing it for single url
-// const options = {
-//   origin: "http://localhost:3000",
-//   optionSuccessStatus: 200,
-// };
-// app.use(cors(options));
+const allowed = ["http://localhost:3000", "http://localhost:4000"];
 
 const port = process.env.PORT || 4000;
 
@@ -70,19 +35,12 @@ async function startServer() {
     plugins: [
       {
         requestDidStart() {
-          /* Within this returned object, define functions that respond
-           to request-specific lifecycle events. */
           return {
             didEncounterErrors(ctx) {
-              // If we couldn't parse the operation, don't
-              // do anything here
               if (!ctx.operation) {
                 return;
               }
               for (const err of ctx.errors) {
-                // Only report internal server errors,
-                // all errors extending ApolloError should be user-facing
-
                 if (process.env.NODE_ENV === "development") {
                   console.log(err);
                 }
@@ -113,6 +71,7 @@ async function startServer() {
         const {
           message = "",
           extensions = {},
+          // eslint-disable-next-line no-shadow
           path = [],
           locations = [],
         } = reqCtx.context.contextError;
@@ -130,10 +89,6 @@ async function startServer() {
 }
 startServer();
 
-app.listen({ port }, async () =>
-  console.log(`🚀 Server ready at http://localhost:${port}/graphql`)
-);
-
-// FIle table
-
-// utils common
+app.listen({ port }, async () => {
+  console.log(`🚀 Server ready at http://localhost:${port}/graphql`);
+});

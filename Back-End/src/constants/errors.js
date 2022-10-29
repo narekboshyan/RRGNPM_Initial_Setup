@@ -1,6 +1,4 @@
 export const ERROR_MESSAGES = {
-  // if you change below message ensure that in addeditProposal's(frontent) message is also changed #And012
-
   invalidEmailOrPassword: "Invalid email or password",
   uploadMaxSize: "Failed to upload the file. The max size of the file is 50 MB.",
   emailConnectedAnotherUser:
@@ -18,13 +16,12 @@ export const ERROR_MESSAGES = {
   invalidToken: "Invalid token",
   invalidUserId: "Invalid userId",
 };
-// this object must be the same here and in frontend *****************************************************
 export const ERROR_CODES = {
-  authorization: "FLASH_CO_AUTHORIZATION",
-  authentication: "FLASH_CO_AUTHENTICATION",
-  invalidData: "FLASH_CO_INVALID_DATA",
-  permissionDenied: "FLASH_CO_PERMISSION_DENIED",
-  invalidToken: "FLASH_CO_INVALID_TOKEN",
-  somethingWentWrong: "FLASH_CO_SOMETHING_WENT_WRONG",
+  authorization: "WORKSPACES_AUTHORIZATION",
+  authentication: "WORKSPACES_AUTHENTICATION",
+  invalidData: "WORKSPACES_INVALID_DATA",
+  permissionDenied: "WORKSPACES_PERMISSION_DENIED",
+  invalidToken: "WORKSPACES_INVALID_TOKEN",
+  somethingWentWrong: "WORKSPACES_SOMETHING_WENT_WRONG",
   invalidCredentials: "Please enter a valid credentials.",
 };

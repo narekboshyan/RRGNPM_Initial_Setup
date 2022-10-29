@@ -5,7 +5,7 @@ import { GET_WORKSPACES } from "graphql/queries/workSpaces";
 import { useMutationWithOnError, useQueryWithOnError } from "hooks/apollo";
 import React, { useEffect, useMemo, useReducer, useState } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { v4 } from "uuid";
 import { channelReducer, CHANNEL_TYPE, matchEmail } from "utils";
 import { CREATE_EDIT_CHANNELS } from "graphql/mutations/channels";
@@ -71,7 +71,10 @@ const ViewWorkSpaces = () => {
     },
   });
 
-  const channels = useMemo(() => workSpaceQueryData?.getWorkSpaces[0]?.channels || [], [workSpaceQueryData]);
+  const channels = useMemo(
+    () => workSpaceQueryData?.getWorkSpaces[0]?.channels || [],
+    [workSpaceQueryData]
+  );
 
   useEffect(() => {
     if (workSpaceQueryData?.getWorkSpaces[0]?.channels.length) {
@@ -87,7 +90,8 @@ const ViewWorkSpaces = () => {
   const [createEditChannels, { data: createEditChannelsQueryData, loading: createEditIsLoading }] =
     useMutationWithOnError(CREATE_EDIT_CHANNELS);
 
-  const [inviteUser, { data: inviteUserQueryData, loading: inviteUserIsLoading }] = useMutationWithOnError(INVITE_USER);
+  const [inviteUser, { data: inviteUserQueryData, loading: inviteUserIsLoading }] =
+    useMutationWithOnError(INVITE_USER);
 
   useEffect(() => {
     if (inviteUserQueryData?.inviteUser) {
@@ -114,9 +118,15 @@ const ViewWorkSpaces = () => {
     }
   }, [createEditIsLoading, dispatch, workSpaceIsLoading, inviteUserIsLoading]);
 
-  const workSpaceData = useMemo(() => workSpaceQueryData?.getWorkSpaces[0] || {}, [workSpaceQueryData]);
+  const workSpaceData = useMemo(
+    () => workSpaceQueryData?.getWorkSpaces[0] || {},
+    [workSpaceQueryData]
+  );
 
-  const invalidChannelData = useMemo(() => !!channelsFormData.find(({ name }) => !name), [channelsFormData]);
+  const invalidChannelData = useMemo(
+    () => !!channelsFormData.find(({ name }) => !name),
+    [channelsFormData]
+  );
 
   const channelSubmitHandler = async (e) => {
     e.preventDefault();
@@ -158,7 +168,7 @@ const ViewWorkSpaces = () => {
 
   const inviteUserSubmitHandler = async (e) => {
     e.preventDefault();
-    if (!matchEmail.test(userEmail)) {
+    if (matchEmail(userEmail)) {
       dispatch(
         addSnackbar({
           type: SNACKBAR_TYPE.error,
@@ -176,96 +186,92 @@ const ViewWorkSpaces = () => {
   };
 
   return (
-    <>
-      <Button
-        component={Link}
-        to={WORKSPACES_ROUTE}
-        color="primary"
-        variant="contained"
-        className={classes.createEditWorkspaceContainer}
-      >
-        Back
-      </Button>
-      <Grid container spacing={2} className={classes.container}>
-        <Grid item md={6}>
-          <Grid container spacing={4}>
-            <Grid item md={12}>
-              <Typography variant="h4">Workspace Details</Typography>
-              <Typography variant="h5">Name: {workSpaceData.name}</Typography>
-              <Typography variant="h5">SubDomain: {workSpaceData.subDomain}</Typography>
-              <Divider />
-            </Grid>
-            <Grid item md={12}>
-              <Typography variant="h4" className={classes.typoGraphy}>
-                Invite User
-              </Typography>
-              <form onSubmit={inviteUserSubmitHandler} className={classes.inviteUserContainer}>
-                <TextField
-                  required
-                  formControlClassName={classes.field}
-                  placeholder="Enter user email"
-                  value={userEmail}
-                  onChange={(e) => setUserEmail(e.target.value)}
-                  label="Fill user email"
-                />
-                <Button variant="contained" color="primary" type="submit" className={classes.inviteUserBtn}>
-                  Invite
-                </Button>
-              </form>
-            </Grid>
+    <Grid container spacing={2} className={classes.container}>
+      <Grid item md={6}>
+        <Grid container spacing={4}>
+          <Grid item md={12}>
+            <Typography variant="h4">Workspace Details</Typography>
+            <Typography variant="h5">Name: {workSpaceData.name}</Typography>
+            <Typography variant="h5">SubDomain: {workSpaceData.subDomain}</Typography>
+            <Divider />
+          </Grid>
+          <Grid item md={12}>
+            <Typography variant="h4" className={classes.typoGraphy}>
+              Invite User
+            </Typography>
+            <form onSubmit={inviteUserSubmitHandler} className={classes.inviteUserContainer}>
+              <TextField
+                required
+                formControlClassName={classes.field}
+                placeholder="Enter user email"
+                value={userEmail}
+                onChange={(e) => setUserEmail(e.target.value)}
+                label="Fill user email"
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                className={classes.inviteUserBtn}
+              >
+                Invite
+              </Button>
+            </form>
           </Grid>
         </Grid>
-        <Grid item md={6}>
-          <form onSubmit={channelSubmitHandler} className={classes.form}>
-            {channelsFormData.map(({ name, id }) => (
-              <div className={classes.formGroup} key={id}>
-                <TextField
-                  required
-                  placeholder="Channel Name"
-                  value={name}
-                  onChange={(e) =>
-                    dispatchChannelsFormData({
-                      type: CHANNEL_TYPE.channelChangeHandler,
-                      payload: {
-                        id,
-                        value: e.target.value,
-                      },
-                    })
-                  }
-                  fullWidth
-                  label="Channel Name"
-                  id="name"
-                  autoComplete="name"
-                  autoFocus
-                />
-                <span
-                  onClick={() =>
-                    dispatchChannelsFormData({
-                      type: CHANNEL_TYPE.removeChannel,
-                      payload: { id },
-                    })
-                  }
-                  className={classes.btn}
-                >
-                  <DeleteIcon />
-                </span>
-              </div>
-            ))}
-            <Button
-              className={classes.btn}
-              color="primary"
-              variant="outlined"
-              onClick={() => dispatchChannelsFormData({ type: CHANNEL_TYPE.addChannel })}
-            >
-              Add new channel
-            </Button>
+      </Grid>
+      <Grid item md={6}>
+        <form onSubmit={channelSubmitHandler} className={classes.form}>
+          {channelsFormData.map(({ name, id }) => (
+            <div className={classes.formGroup} key={id}>
+              <TextField
+                required
+                placeholder="Channel Name"
+                value={name}
+                onChange={(e) =>
+                  dispatchChannelsFormData({
+                    type: CHANNEL_TYPE.channelChangeHandler,
+                    payload: {
+                      id,
+                      value: e.target.value,
+                    },
+                  })
+                }
+                fullWidth
+                label="Channel Name"
+                id="name"
+                autoComplete="name"
+                autoFocus
+              />
+              <span
+                onClick={() =>
+                  dispatchChannelsFormData({
+                    type: CHANNEL_TYPE.removeChannel,
+                    payload: { id },
+                  })
+                }
+                className={classes.btn}
+              >
+                <DeleteIcon />
+              </span>
+            </div>
+          ))}
+          <Button
+            className={classes.btn}
+            color="primary"
+            variant="outlined"
+            onClick={() => dispatchChannelsFormData({ type: CHANNEL_TYPE.addChannel })}
+          >
+            Add new channel
+          </Button>
+          {channelsFormData.length > 0 && (
             <Button type="submit" className={classes.btn} color="primary" variant="contained">
               Submit
             </Button>
-          </form>
-        </Grid>
+          )}
+        </form>
       </Grid>
-    </>
+    </Grid>
   );
 };
 

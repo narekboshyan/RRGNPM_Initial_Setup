@@ -1,7 +1,7 @@
 import PrivateRoute from "components/PrivateRoute";
 import { PROFILE_ROUTE } from "constants";
 import { SIGN_IN_ROUTE, SIGN_UP_ROUTE, WORKSPACES_ROUTE } from "constants";
-import Login from "Pages/Auth/Signin";
+import Signin from "Pages/Auth/Signin";
 import Signup from "Pages/Auth/Signup";
 import Home from "Pages/Home";
 import NotFound from "Pages/NotFound";
@@ -13,9 +13,9 @@ import React from "react";
 import { useRoutes } from "react-router-dom";
 
 const Routes = () => {
-  let element = useRoutes([
+  let routes = useRoutes([
     { path: "/", element: <Home /> },
-    { path: SIGN_IN_ROUTE, element: <Login /> },
+    { path: SIGN_IN_ROUTE, element: <Signin /> },
     { path: SIGN_UP_ROUTE, element: <Signup /> },
     {
       path: WORKSPACES_ROUTE,
@@ -63,7 +63,7 @@ const Routes = () => {
     },
   ]);
 
-  return element;
+  return routes;
 };
 
 export default Routes;

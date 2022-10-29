@@ -5,3 +5,9 @@ export const UPDATE_PROFILE_DATA = gql`
     updateProfileData(data: $data)
   }
 `;
+
+export const DELETE_ACCOUNT = gql`
+  mutation deleteAccount {
+    deleteAccount
+  }
+`;

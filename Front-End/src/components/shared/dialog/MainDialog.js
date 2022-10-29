@@ -1,13 +1,24 @@
 import React from "react";
 import clsx from "clsx";
-import { Button, Dialog, DialogActions, DialogContent, makeStyles, useMediaQuery } from "@material-ui/core";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  makeStyles,
+  useMediaQuery,
+} from "@material-ui/core";
 import IconButton from "components/shared/Button/IconButton";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { ReactComponent as CloseIcon } from "assets/icons/close_small_icon.svg";
 import { ReactComponent as SaveIcon } from "assets/icons/content-save.svg";
 import { ReactComponent as ArrowBackIcon } from "assets/icons/back.svg";
 import { useStepStyles } from "styles/Step";
-import { DARK_BLUE_COLOR, LIGHTEN_GRAY_COLOR, MOBILE_LAYOUT_WIDTH_BREAKPOINT } from "constants/index";
+import {
+  DARK_BLUE_COLOR,
+  LIGHTEN_GRAY_COLOR,
+  MOBILE_LAYOUT_WIDTH_BREAKPOINT,
+} from "constants/index";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
@@ -100,10 +111,14 @@ const MainDialog = ({
         })}
       >
         <div data-cy="dialogStepTitle" className={stepClasses.stepTitle}>
-          {applyBack && <IconButton className={classes.backBtn} icon={<ArrowBackIcon />} onClick={onBack} />}
+          {applyBack && (
+            <IconButton className={classes.backBtn} icon={<ArrowBackIcon />} onClick={onBack} />
+          )}
           {title}
         </div>
-        {closable ? closeIcon || <CloseIcon className={classes.dialogCloseIcon} onClick={onClose} /> : null}
+        {closable
+          ? closeIcon || <CloseIcon className={classes.dialogCloseIcon} onClick={onClose} />
+          : null}
       </DialogTitle>
     );
   };

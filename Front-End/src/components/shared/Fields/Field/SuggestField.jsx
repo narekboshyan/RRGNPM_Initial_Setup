@@ -1,59 +1,59 @@
-import React, { useState, useCallback, useRef } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import clsx from 'clsx';
-import { Popper, ClickAwayListener, makeStyles, MenuItem, MenuList } from '@material-ui/core';
-import { useFieldStyles, useMenuStyles } from 'styles';
-import { useTypographyStyles } from 'styles/Typography';
-import { GRAY_COLOR, WHITE_COLOR, LIGHT_BLUE_COLOR } from 'constants/index';
-import { isRegexExpressionValid } from 'helpers/common';
-import TextField from '../TextField';
+import React, { useState, useCallback, useRef } from "react";
+import { v4 as uuidv4 } from "uuid";
+import clsx from "clsx";
+import { Popper, ClickAwayListener, makeStyles, MenuItem, MenuList } from "@material-ui/core";
+import { useFieldStyles, useMenuStyles } from "styles";
+import { useTypographyStyles } from "styles/Typography";
+import { GRAY_COLOR, WHITE_COLOR, LIGHT_BLUE_COLOR } from "constants/index";
+import { isRegexExpressionValid } from "helpers/common";
+import TextField from "../TextField";
 
 const useStyles = makeStyles({
   labelBox: {
-    display: 'flex',
-    alignItems: 'center'
+    display: "flex",
+    alignItems: "center",
   },
   menuList: {
     backgroundColor: WHITE_COLOR,
     border: `1px solid ${GRAY_COLOR}`,
-    boxShadow: '0px 4px 4px rgba(8, 35, 48, 0.12)',
-    borderRadius: '0px 0px 5px 5px',
-    boxSizing: 'border-box'
+    boxShadow: "0px 4px 4px rgba(8, 35, 48, 0.12)",
+    borderRadius: "0px 0px 5px 5px",
+    boxSizing: "border-box",
   },
   menuItem: {
-    display: 'block'
+    display: "block",
   },
   popperRoot: {
-    width: '100%',
+    width: "100%",
     zIndex: 1300,
-    marginTop: 4
+    marginTop: 4,
   },
   highlightedPart: {
-    color: LIGHT_BLUE_COLOR
-  }
+    color: LIGHT_BLUE_COLOR,
+  },
 });
 
 const SuggestField = React.forwardRef((props, ref) => {
   const {
-    value = '',
+    value = "",
     onChange = () => {},
     onClose,
     disabled = false,
     error,
-    label = '',
-    labelAction = '',
-    helperText = '',
-    className = '',
-    fieldLabelProps: { className: fieldLabelClassName = '', ...fieldLabelRestProps } = {},
+    label = "",
+    labelAction = "",
+    helperText = "",
+    className = "",
+    fieldLabelProps: { className: fieldLabelClassName = "", ...fieldLabelRestProps } = {},
     popperProps: { className: popperClassName, ...restPopperProps } = {},
     options = [],
     renderer,
     open: openProp = false,
     withMenuItemDivider = true,
-    menuListClassName = '',
-    menuItemLabelField = '',
-    menuItemValueField = '',
-    name = '',
+    menuListClassName = "",
+    menuItemLabelField = "",
+    menuItemValueField = "",
+    name = "",
     highlight = true,
     ...restProps
   } = props;
@@ -68,14 +68,14 @@ const SuggestField = React.forwardRef((props, ref) => {
 
   const getHighlightedText = useCallback(
     // eslint-disable-next-line no-shadow
-    (text = '', highlight = '') => {
+    (text = "", highlight = "") => {
       if (!highlight || !isRegexExpressionValid(highlight)) return text;
 
       let isFound = false;
 
-      const parts = text.split(RegExp(`(${highlight})`, 'gi'));
+      const parts = text.split(RegExp(`(${highlight})`, "gi"));
 
-      const check = (p = '', h = '') => {
+      const check = (p = "", h = "") => {
         if (p.toLowerCase() === h.toLowerCase() && !isFound) {
           isFound = true;
           return isFound;
@@ -86,7 +86,7 @@ const SuggestField = React.forwardRef((props, ref) => {
 
       return (
         <>
-          {parts.map(part =>
+          {parts.map((part) =>
             check(part, highlight) ? (
               <span key={uuidv4()} className={classes.highlightedPart}>
                 {part}
@@ -108,9 +108,9 @@ const SuggestField = React.forwardRef((props, ref) => {
       const nativeEvent = e.nativeEvent || e;
       const clonedEvent = new nativeEvent.constructor(nativeEvent.type, nativeEvent);
 
-      Object.defineProperty(clonedEvent, 'target', {
+      Object.defineProperty(clonedEvent, "target", {
         writable: true,
-        value: { value: valueField ? option[valueField] : option, name }
+        value: { value: valueField ? option[valueField] : option, name },
       });
 
       setOpen(false);
@@ -126,12 +126,12 @@ const SuggestField = React.forwardRef((props, ref) => {
           <span
             className={clsx(fieldStyles.fieldLabel, {
               [fieldStyles.fieldLabelError]: !!error,
-              [fieldLabelClassName]: fieldLabelClassName
+              [fieldLabelClassName]: fieldLabelClassName,
             })}
             {...fieldLabelRestProps}
           >
             {label}
-            {restProps.required ? '*' : ''}
+            {restProps.required ? "*" : ""}
           </span>
         )}
         {labelAction}
@@ -139,7 +139,7 @@ const SuggestField = React.forwardRef((props, ref) => {
       <ClickAwayListener
         mouseEvent="onMouseDown"
         touchEvent="onTouchStart"
-        onClickAway={e => {
+        onClickAway={(e) => {
           setOpen(false);
           if (onClose) onClose(e);
         }}
@@ -147,7 +147,7 @@ const SuggestField = React.forwardRef((props, ref) => {
         <div>
           <TextField
             value={value}
-            onChange={e => {
+            onChange={(e) => {
               if (e.target.value?.trim()) setOpen(true);
               onChange(e);
             }}
@@ -165,35 +165,35 @@ const SuggestField = React.forwardRef((props, ref) => {
             {...restProps}
             inputProps={{
               required: false,
-              ...(restProps.inputProps || {})
+              ...(restProps.inputProps || {}),
             }}
           />
           <Popper
-            id={`suggest popper-${name || ''}`}
+            id={`suggest popper-${name || ""}`}
             className={clsx(classes.popperRoot, popperClassName)}
             anchorEl={inputRef?.current}
             open={!disabled && !!(inputRef?.current && options?.length && open && openProp)}
             placement="bottom-start"
             modifiers={{
               flip: {
-                enabled: false
-              }
+                enabled: false,
+              },
             }}
-            style={{ maxWidth: inputRef?.current?.clientWidth || 'unset' }}
+            style={{ maxWidth: inputRef?.current?.clientWidth || "unset" }}
             {...restPopperProps}
           >
             <MenuList
-              id={`suggest menu-${name || ''}`}
+              id={`suggest menu-${name || ""}`}
               className={clsx(menuClasses.menuPaper, {
-                [menuListClassName]: !!menuListClassName
+                [menuListClassName]: !!menuListClassName,
               })}
               disablePadding
             >
-              {options.map(option => {
+              {options.map((option) => {
                 if (renderer) {
                   return renderer(option);
                 }
-                if (typeof option === 'object') {
+                if (typeof option === "object") {
                   return option.renderer
                     ? option.renderer()
                     : !option.hidden && (
@@ -206,7 +206,7 @@ const SuggestField = React.forwardRef((props, ref) => {
                           )}
                           key={`key-${option[menuItemValueField] || option.id}`}
                           value={option[menuItemValueField]}
-                          onClick={e => handleChange({ option, menuItemValueField }, e)}
+                          onClick={(e) => handleChange({ option, menuItemValueField }, e)}
                         >
                           {highlight
                             ? getHighlightedText(option[menuItemLabelField], value)
@@ -224,7 +224,7 @@ const SuggestField = React.forwardRef((props, ref) => {
                     )}
                     key={`key-${option}`}
                     value={option}
-                    onClick={e => handleChange({ option }, e)}
+                    onClick={(e) => handleChange({ option }, e)}
                   >
                     {highlight ? getHighlightedText(option, value) : option}
                   </MenuItem>

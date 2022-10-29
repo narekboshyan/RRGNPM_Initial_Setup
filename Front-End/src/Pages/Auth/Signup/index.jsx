@@ -8,7 +8,13 @@ import { useMutationWithOnError } from "hooks/apollo";
 import { SIGN_UP } from "graphql/mutations/auth";
 import { addLoadingData, addSnackbar, removeLoadingData } from "redux/slices/shared";
 import { useDispatch } from "react-redux";
-import { FETCH_LOADING_TEXT, DARK_BLUE_COLOR, SNACKBAR_TYPE, SIGN_IN_ROUTE, SNACKBAR_MESSAGES } from "constants/index";
+import {
+  FETCH_LOADING_TEXT,
+  DARK_BLUE_COLOR,
+  SNACKBAR_TYPE,
+  SIGN_IN_ROUTE,
+  SNACKBAR_MESSAGES,
+} from "constants/index";
 import { matchEmail } from "utils";
 
 const useStyles = makeStyles(() => ({
@@ -77,19 +83,19 @@ const SignUp = () => {
     firstName: "",
     lastName: "",
   });
+
   const { email, password, firstName, lastName } = formData;
 
   const [searchParams] = useSearchParams();
   const invitedUserEmail = searchParams.get("email");
   const invitationCode = searchParams.get("invitationCode");
 
-  console.log(invitedUserEmail, invitationCode, "invitedUserEmail, invitationCode");
-
   const navigate = useNavigate();
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const [signupUser, { data: signUpData, loading: signUpLoading }] = useMutationWithOnError(SIGN_UP);
+  const [signupUser, { data: signUpData, loading: signUpLoading }] =
+    useMutationWithOnError(SIGN_UP);
 
   useEffect(() => {
     if (invitedUserEmail) {
@@ -132,109 +138,116 @@ const SignUp = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    if (!matchEmail.test(email)) {
+    if (matchEmail(email)) {
       dispatch(
         addSnackbar({
           type: SNACKBAR_TYPE.error,
           message: "Invalid email address",
         })
       );
+
       return;
     }
     await signupUser({
       variables: {
-        data: { ...formData, ...(invitedUserEmail && invitationCode ? { invitationCode, invitedUserEmail } : {}) },
+        data: {
+          ...formData,
+          ...(invitedUserEmail && invitationCode ? { invitationCode, invitedUserEmail } : {}),
+        },
       },
     });
   };
 
   return (
-    <>
-      <Grid container sx={{ height: "100vh", overflow: "hidden" }}>
-        <div className={classes.topPartRoot}>
-          <div className={classes.checkAccountText}>Already have an account?</div>
-          <Link to={SIGN_IN_ROUTE} className={classes.link}>
-            <Button variant="contained" color="primary">
-              SIGN IN
-            </Button>
-          </Link>
-        </div>
-        <Grid
-          container
-          display="flex"
-          sx={{ height: "100%", width: "100%" }}
-          justifycontent="center"
-          flexdirection="column"
-          alignItems="center"
-        >
-          <form onSubmit={submitHandler} className={classes.containerRoot}>
-            <Grid container spacing={2} display="flex" justifycontent="center">
-              <Typography variant="h4" className={classes.center}>
-                Sign up
-              </Typography>
-              <img src="assets/icons/logo-2.png" alt="" />
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  placeholder="Enter your First Name"
-                  formControlClassName={classes.field}
-                  value={firstName}
-                  onChange={inputChangeHandler}
-                  fullWidth
-                  label="First Name"
-                  id="firstName"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  placeholder="Enter your Last Name"
-                  formControlClassName={classes.field}
-                  value={lastName}
-                  onChange={inputChangeHandler}
-                  fullWidth
-                  label="Last Name"
-                  id="lastName"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  placeholder="Enter your email"
-                  formControlClassName={classes.field}
-                  value={email}
-                  onChange={inputChangeHandler}
-                  fullWidth
-                  disabled={invitationCode && invitedUserEmail}
-                  label="Email"
-                  id="email"
-                  autoComplete="email"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <PasswordField
-                  required
-                  placeholder="Enter your password"
-                  formControlClassName={classes.field}
-                  value={password}
-                  onChange={inputChangeHandler}
-                  fullWidth
-                  id="password"
-                  label="Password"
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <Button className={classes.submit} variant="contained" color="primary" fullWidth type="submit">
-                  Sign Up
-                </Button>
-              </Grid>
+    <Grid container sx={{ height: "100vh", overflow: "hidden" }}>
+      <div className={classes.topPartRoot}>
+        <div className={classes.checkAccountText}>Already have an account?</div>
+        <Link to={SIGN_IN_ROUTE} className={classes.link}>
+          <Button variant="contained" color="primary">
+            SIGN IN
+          </Button>
+        </Link>
+      </div>
+      <Grid
+        container
+        display="flex"
+        sx={{ height: "100%", width: "100%" }}
+        justifycontent="center"
+        flexdirection="column"
+        alignItems="center"
+      >
+        <form onSubmit={submitHandler} className={classes.containerRoot}>
+          <Grid container spacing={2} display="flex" justifycontent="center">
+            <Typography variant="h4" className={classes.center}>
+              Sign up
+            </Typography>
+            <Grid item xs={12}>
+              <TextField
+                required
+                placeholder="Enter your First Name"
+                formControlClassName={classes.field}
+                value={firstName}
+                onChange={inputChangeHandler}
+                fullWidth
+                label="First Name"
+                id="firstName"
+                autoFocus
+              />
             </Grid>
-          </form>
-        </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                placeholder="Enter your Last Name"
+                formControlClassName={classes.field}
+                value={lastName}
+                onChange={inputChangeHandler}
+                fullWidth
+                label="Last Name"
+                id="lastName"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                placeholder="Enter your email"
+                formControlClassName={classes.field}
+                value={email}
+                onChange={inputChangeHandler}
+                fullWidth
+                disabled={invitationCode && invitedUserEmail}
+                label="Email"
+                id="email"
+                autoComplete="email"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <PasswordField
+                required
+                placeholder="Enter your password"
+                formControlClassName={classes.field}
+                value={password}
+                onChange={inputChangeHandler}
+                fullWidth
+                id="password"
+                label="Password"
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Button
+                className={classes.submit}
+                variant="contained"
+                color="primary"
+                fullWidth
+                type="submit"
+              >
+                Sign Up
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
       </Grid>
-    </>
+    </Grid>
   );
 };
 

@@ -1,16 +1,17 @@
-import { Button, Divider, Grid, makeStyles, Typography } from "@material-ui/core";
+import { Divider, Grid, makeStyles, Typography } from "@material-ui/core";
 import { WORKSPACES_ROUTE } from "constants";
 import { GET_WORKSPACES } from "graphql/queries/workSpaces";
 import { useMutationWithOnError, useQueryWithOnError } from "hooks/apollo";
 import React, { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { DELETE_WORKSPACES } from "graphql/mutations";
 import { useDispatch } from "react-redux";
 import { addLoadingData, addSnackbar, removeLoadingData } from "redux/slices/shared";
-import { SNACKBAR_TYPE, FETCH_LOADING_TEXT, PROFILE_ROUTE } from "constants/index";
+import { SNACKBAR_TYPE, FETCH_LOADING_TEXT } from "constants/index";
 import ConfirmDialog from "components/shared/dialog/ConfirmDialog";
+import IconButton from "components/shared/Button/IconButton";
 
 const useStyles = makeStyles({
   workSpaceContainer: {
@@ -73,6 +74,7 @@ const WorkSpaces = () => {
 
   const classes = useStyles();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [deleteWorkSpace, { data: deleteQueryData, loading: deleteWorkSpaceIsLoading }] =
     useMutationWithOnError(DELETE_WORKSPACES);
@@ -88,7 +90,10 @@ const WorkSpaces = () => {
     }
   }, [deleteQueryData, dispatch]);
 
-  const workSpaceData = useMemo(() => workSpaceQueryData?.getWorkSpaces || [], [workSpaceQueryData]);
+  const workSpaceData = useMemo(
+    () => workSpaceQueryData?.getWorkSpaces || [],
+    [workSpaceQueryData]
+  );
 
   const deleteWorkspaceHandler = async (id) => {
     await deleteWorkSpace({
@@ -117,43 +122,30 @@ const WorkSpaces = () => {
         WorkSpace Page
       </Typography>
       <Grid container>
-        <Grid item md={7} className={classes.workSpaceContainer}>
+        <Grid item md={12} className={classes.workSpaceContainer}>
           <Typography variant="h5" className={classes.typoGraphy}>
             WorkSpace list
           </Typography>
           {workSpaceData.map(({ name, subDomain, id }) => (
             <div className={classes.workSpaceRow} key={id}>
-              {console.log(WORKSPACES_ROUTE, id)}
               <Link to={`${WORKSPACES_ROUTE}/${id}`} className={classes.workSpace}>
                 <span>Name: {name}</span>
                 <span>Unique Slug: {subDomain}</span>
                 <Divider />
               </Link>
               <div className={classes.actionContainer}>
-                <Link to={`${WORKSPACES_ROUTE}/edit/${id}`}>
-                  <EditIcon />
-                </Link>
-                <span className={classes.deleteIcon} onClick={() => setOpenConfirmDialog(id)}>
-                  <DeleteIcon />
-                </span>
+                <IconButton
+                  onClick={() => navigate(`${WORKSPACES_ROUTE}/edit/${id}`)}
+                  icon={<EditIcon />}
+                />
+                <IconButton
+                  icon={<DeleteIcon />}
+                  onClick={() => setOpenConfirmDialog(id)}
+                  className={classes.deleteIcon}
+                />
               </div>
             </div>
           ))}
-        </Grid>
-        <Grid md={5} item className={classes.createWorkSpaceBtn}>
-          <Grid>
-            <Button component={Link} color="primary" variant="contained" to={`${WORKSPACES_ROUTE}/create`}>
-              Create workspace
-            </Button>{" "}
-            <Button component={Link} color="primary" variant="contained" to={PROFILE_ROUTE}>
-              Go To My Profile Page
-            </Button>
-          </Grid>
-          <Grid className={classes.dragDrop}>
-            <Typography variant="h4" className={classes.typoGraphy}>
-              Upload files{" "}
-            </Typography>
-          </Grid>
         </Grid>
       </Grid>
 

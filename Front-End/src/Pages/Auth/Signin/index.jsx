@@ -1,6 +1,5 @@
 import TextField from "components/shared/Fields/TextField";
 import React, { useEffect, useState } from "react";
-
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Grid, Typography } from "@material-ui/core";
 import PasswordField from "components/shared/Fields/PasswordFields";
@@ -84,8 +83,8 @@ const SignIn = () => {
     password: "",
   });
 
-  const [signIn, { data: signInQueryData, loading: signInIsLoading }] = useMutationWithOnError(SIGN_IN);
-
+  const [signIn, { data: signInQueryData, loading: signInIsLoading }] =
+    useMutationWithOnError(SIGN_IN);
   const { email, password } = formData;
   const classes = useStyles();
 
@@ -176,7 +175,13 @@ const SignIn = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Button variant="contained" color="primary" className={classes.submit} type="submit" fullWidth>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  type="submit"
+                  fullWidth
+                >
                   Sign In
                 </Button>
               </Grid>
