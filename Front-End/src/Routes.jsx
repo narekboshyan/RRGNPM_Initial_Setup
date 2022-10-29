@@ -1,5 +1,7 @@
 import PrivateRoute from "components/PrivateRoute";
 import { PROFILE_ROUTE } from "constants";
+import { NOT_FOUND_ROUTE } from "constants";
+import { CREATE_WORKSPACE_ROUTE } from "constants";
 import { SIGN_IN_ROUTE, SIGN_UP_ROUTE, WORKSPACES_ROUTE } from "constants";
 import Signin from "Pages/Auth/Signin";
 import Signup from "Pages/Auth/Signup";
@@ -34,7 +36,7 @@ const Routes = () => {
       ),
     },
     {
-      path: `${WORKSPACES_ROUTE}/create`,
+      path: CREATE_WORKSPACE_ROUTE,
       element: (
         <PrivateRoute>
           <CreateEditWorkSpace />
@@ -58,7 +60,7 @@ const Routes = () => {
       ),
     },
     {
-      path: "*",
+      path: NOT_FOUND_ROUTE,
       element: <NotFound />,
     },
   ]);
