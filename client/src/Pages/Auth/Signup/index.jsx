@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Grid, Typography } from "@material-ui/core";
 import PasswordField from "components/shared/Fields/PasswordFields";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMutationWithOnError } from "hooks/apollo";
 import { SIGN_UP } from "graphql/mutations";
 import { addLoadingData, addSnackbar, removeLoadingData } from "redux/slices/shared";
@@ -86,25 +86,12 @@ const SignUp = () => {
 
   const { email, password, firstName, lastName } = formData;
 
-  const [searchParams] = useSearchParams();
-  const invitedUserEmail = searchParams.get("email");
-  const invitationCode = searchParams.get("invitationCode");
-
   const navigate = useNavigate();
   const classes = useStyles();
   const dispatch = useDispatch();
 
   const [signupUser, { data: signUpData, loading: signUpLoading }] =
     useMutationWithOnError(SIGN_UP);
-
-  useEffect(() => {
-    if (invitedUserEmail) {
-      setFormData((prevState) => ({
-        ...prevState,
-        email: invitedUserEmail,
-      }));
-    }
-  }, [invitedUserEmail]);
 
   useEffect(() => {
     if (signUpLoading) {
@@ -164,7 +151,6 @@ const SignUp = () => {
       variables: {
         data: {
           ...formData,
-          ...(invitedUserEmail && invitationCode ? { invitationCode, invitedUserEmail } : {}),
         },
       },
     });
@@ -226,7 +212,6 @@ const SignUp = () => {
                 value={email}
                 onChange={inputChangeHandler}
                 fullWidth
-                disabled={invitationCode && invitedUserEmail}
                 label="Email"
                 id="email"
                 autoComplete="email"

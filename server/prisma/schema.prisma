@@ -13,7 +13,6 @@ model User {
   firstName      String?
   lastName       String?
   email          String            @unique
-  invitationCode Int?              @unique
   password       String?
   profilePicture ProfilePicture?
   workSpaces     UserOnWorkSpace[]

@@ -9,7 +9,7 @@ const auth = {
 };
 const from = process.env.NODEMAILER_FROM;
 
-export const sendEmail = (sentInvitedUserFullName, to, invitationCode, workspaceName) => {
+export const sendEmail = (sentInvitedUserFullName, to, workspaceName) => {
   try {
     const transporter = nodemailer.createTransport({
       service,
@@ -24,7 +24,7 @@ export const sendEmail = (sentInvitedUserFullName, to, invitationCode, workspace
       subject: "Invite user to workspace Application",
       text: "TEXT",
       html: `
-          <div>Hi,${sentInvitedUserFullName} has invited you to ${workspaceName} workspace. Please  <a href="${process.env.APP_FRONT_END_URL}/signup?invitationCode=${invitationCode}&email=${to}">Click this link to go and register</a> 
+          <div>Hi,${sentInvitedUserFullName} has invited you to ${workspaceName} workspace. Please  <a href="${process.env.APP_FRONT_END_URL}/signin">Click this link to go to sign in page</a> 
           </div>
         `,
     };

@@ -1,38 +1,24 @@
 import bcrypt from "bcryptjs";
 import { sendEmail } from "../../services/Email.js";
-import { generateRandomNumber } from "../../utils/helpers.js";
+import { InvalidDataError } from "../../errors/InvalidDataError.js";
 
 export const inviteUser = async (_parent, { invitedUserEmail, workspaceId }, context) => {
   try {
     const { prisma, user } = context;
-    const invitationCode = generateRandomNumber(6);
 
-    const existingUserWIthEmail = await prisma.user.findUnique({
+    const invitedUser = await prisma.user.findUnique({
       where: {
         email: invitedUserEmail,
       },
     });
 
-    if (existingUserWIthEmail) {
-      throw new Error("user with this email already exists");
+    if (!invitedUser) {
+      throw new InvalidDataError("User with this email does not exist");
     }
 
-    const createdInvitedUser = await prisma.userOnWorkSpace.create({
+    await prisma.userOnWorkSpace.create({
       data: {
-        user: {
-          create: {
-            email: invitedUserEmail,
-            invitationCode,
-          },
-        },
-      },
-    });
-
-    await prisma.userOnWorkSpace.update({
-      where: {
-        id: createdInvitedUser.id,
-      },
-      data: {
+        userId: invitedUser.id,
         workspaceId,
       },
     });
@@ -43,12 +29,7 @@ export const inviteUser = async (_parent, { invitedUserEmail, workspaceId }, con
       },
     });
 
-    sendEmail(
-      `${user.firstName} ${user.lastName}`,
-      invitedUserEmail,
-      invitationCode,
-      workspace.name
-    );
+    sendEmail(`${user.firstName} ${user.lastName}`, invitedUserEmail, workspace.name);
 
     return true;
   } catch (error) {
